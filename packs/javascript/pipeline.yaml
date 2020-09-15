@@ -4,7 +4,7 @@ extends:
 pipelines:
   environment:
     - name: DOCKER_ORG
-      value: kubernetes
+      value: "kubernetes"
   pullRequest:
     build:
       steps:
