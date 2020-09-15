@@ -3,25 +3,27 @@ extends:
   file: javascript/pipeline.yaml
 pipelines:
   pullRequest:
-
-    build:
-      env:
-        - name: NAGI
-          value: "kubernetes"
-      steps:
-      - sh: echo "$NAGI"
-        name: print-docker-org
-      - sh: echo "PR-$PULL_NUMBER"
-        name: print-version
-      - sh: export VERSION="PR-$PULL_NUMBER" && skaffold build -f skaffold.yaml
-        name: container-build
-    postBuild:
-      environment:
-        - name: DOCKER_ORG
-          value: "kubernetes"
-      steps:
-      - sh: export VERSION="PR-$PULL_NUMBER" && jx step post build --image $DOCKER_REGISTRY/$DOCKER_ORG/$APP_NAME:$VERSION && printenv
-        name: post-build
+    pipeline:
+      options:
+        containerOptions:
+          env:
+            - name: NAGI
+              value: "kubernetes"
+      build:
+        steps:
+        - sh: echo "$NAGI"
+          name: print-docker-org
+        - sh: echo "PR-$PULL_NUMBER"
+          name: print-version
+        - sh: export VERSION="PR-$PULL_NUMBER" && skaffold build -f skaffold.yaml
+          name: container-build
+      postBuild:
+        environment:
+          - name: DOCKER_ORG
+            value: "kubernetes"
+        steps:
+        - sh: export VERSION="PR-$PULL_NUMBER" && jx step post build --image $DOCKER_REGISTRY/$DOCKER_ORG/$APP_NAME:$VERSION && printenv
+          name: post-build
   release:
     build:
       steps:
