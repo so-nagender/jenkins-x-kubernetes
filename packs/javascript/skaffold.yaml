@@ -2,7 +2,7 @@ apiVersion: skaffold/v1beta2
 kind: Config
 build:
   artifacts:
-  - image: REPLACE_ME_DOCKER_ORG/REPLACE_ME_APP_NAME
+  - image: 'hello-k8s/startup-with-node'
     context: .
     docker: {}
   tagPolicy:
