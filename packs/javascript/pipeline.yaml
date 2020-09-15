@@ -6,10 +6,10 @@ pipelines:
 
     build:
       environment:
-        - name: DOCKER_ORG
+        - name: NAGI
           value: "kubernetes"
       steps:
-      - sh: echo $DOCKER_ORG
+      - sh: echo "$NAGI"
         name: print-docker-org
       - sh: echo "PR-$PULL_NUMBER"
         name: print-version
