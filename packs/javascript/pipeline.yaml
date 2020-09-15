@@ -7,7 +7,7 @@ pipelines:
       steps:
       - sh: echo "PR-$PULL_NUMBER"
         name: print-version
-      - sh: ./eval-tag.sh >> yourFilePath
+      - sh: ../../eval-tag.sh >> yourFilePath
         name: eval-tag
       - sh: cat yourFilePath
         name: print-tag
