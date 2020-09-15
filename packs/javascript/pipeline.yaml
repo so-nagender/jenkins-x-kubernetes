@@ -2,17 +2,22 @@ extends:
   import: classic
   file: javascript/pipeline.yaml
 pipelines:
-  environment:
-    - name: DOCKER_ORG
-      value: "kubernetes"
   pullRequest:
     build:
+      environment:
+        - name: DOCKER_ORG
+          value: "kubernetes"
       steps:
-      - sh: printenv
-        name: print-env
+      - sh: echo "$DOCKER_ORG"
+        name: print-docker-org
+      - sh: echo "PR-$PULL_NUMBER"
+        name: print-version
       - sh: export VERSION="PR-$PULL_NUMBER" && skaffold build -f skaffold.yaml
         name: container-build
     postBuild:
+      environment:
+        - name: DOCKER_ORG
+          value: "kubernetes"
       steps:
       - sh: export VERSION="PR-$PULL_NUMBER" && jx step post build --image $DOCKER_REGISTRY/$DOCKER_ORG/$APP_NAME:$VERSION && printenv
         name: post-build
