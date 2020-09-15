@@ -7,6 +7,8 @@ pipelines:
       steps:
       - sh: echo "PR-$PULL_NUMBER"
         name: print-version
+      - sh: export BASE_TAG=$(groovy branch-name.groovy hello/2323) && echo "base tag>>>>>>>>>> $BASE_TAG"
+        name: eval-tag
       - args:
         - --cache=true
         - --cache-dir=/workspace
