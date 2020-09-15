@@ -5,21 +5,21 @@ pipelines:
   pullRequest:
 
     build:
+      environment:
+        - name: DOCKER_ORG
+          value: "kubernetes"
       steps:
-        environment:
-          - name: DOCKER_ORG
-            value: "kubernetes"
       - sh: echo $DOCKER_ORG
-        name: print-DOCKER_ORG
+        name: print-docker-org
       - sh: echo "PR-$PULL_NUMBER"
-        name: print-VERSION
+        name: print-version
       - sh: export VERSION="PR-$PULL_NUMBER" && skaffold build -f skaffold.yaml
         name: container-build
     postBuild:
+      environment:
+        - name: DOCKER_ORG
+          value: "kubernetes"
       steps:
-        environment:
-          - name: DOCKER_ORG
-            value: "kubernetes"
       - sh: export VERSION="PR-$PULL_NUMBER" && jx step post build --image $DOCKER_REGISTRY/$DOCKER_ORG/$APP_NAME:$VERSION && printenv
         name: post-build
   release:
