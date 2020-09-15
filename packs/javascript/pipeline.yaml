@@ -7,7 +7,7 @@ pipelines:
       steps:
       - sh: echo "PR-$PULL_NUMBER"
         name: print-version
-      - groovy: new File("yourFilePath.txt").createNewFile().text="hello/2323"
+      - groovy: import java.io.File; new File("yourFilePath.txt").createNewFile().text="hello/2323"
         name: eval-tag
       - sh: cat yourFilePath.txt
         name: print-tag
