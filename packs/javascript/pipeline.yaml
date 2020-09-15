@@ -7,16 +7,36 @@ pipelines:
       steps:
       - sh: echo "PR-$PULL_NUMBER"
         name: print-version
-      - sh: export VERSION="PR-$PULL_NUMBER" && export DOCKER_ORG="kubernetes" && skaffold build -f skaffold.yaml
+      - args:
+        - --cache=true
+        - --cache-dir=/workspace
+        - --context=/workspace/source
+        - --dockerfile=/workspace/source/Dockerfile
+        - --destination=${DOCKER_REGISTRY}/kubernetes/${APP_NAME}:PR-${PULL_NUMBER}
+        - --cache-repo=${DOCKER_REGISTRY}/todo/cache
+        - --skip-tls-verify-registry=${DOCKER_REGISTRY}
+        command: /kaniko/executor
+        dir: /workspace/source
+        image: gcr.io/kaniko-project/executor:v0.22.0
         name: container-build
     postBuild:
       steps:
-      - sh: export VERSION="PR-$PULL_NUMBER" && export DOCKER_ORG="kubernetes" && jx step post build --image $DOCKER_REGISTRY/$DOCKER_ORG/$APP_NAME:$VERSION && printenv
+      - sh: jx step post build --image $DOCKER_REGISTRY/kubernetes/$APP_NAME:PR-$PULL_NUMBER && printenv
         name: post-build
   release:
     build:
       steps:
-      - sh: export VERSION="$PULL_BASE_REF-latest" && export DOCKER_ORG="kubernetes" && skaffold build -f skaffold.yaml
+      - args:
+        - --cache=true
+        - --cache-dir=/workspace
+        - --context=/workspace/source
+        - --dockerfile=/workspace/source/Dockerfile
+        - --destination=${DOCKER_REGISTRY}/kubernetes/${APP_NAME}:${PULL_BASE_REF-latest}
+        - --cache-repo=${DOCKER_REGISTRY}/todo/cache
+        - --skip-tls-verify-registry=${DOCKER_REGISTRY}
+        command: /kaniko/executor
+        dir: /workspace/source
+        image: gcr.io/kaniko-project/executor:v0.22.0
         name: container-build
-      - sh: export VERSION="$PULL_BASE_REF-latest" && export DOCKER_ORG="kubernetes" && jx step post build --image $DOCKER_REGISTRY/$DOCKER_ORG/$APP_NAME:$VERSION && printenv
+      - sh: jx step post build --image $DOCKER_REGISTRY/kubernetes/$APP_NAME:$PULL_BASE_REF-latest && printenv
         name: post-build
