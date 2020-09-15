@@ -9,7 +9,8 @@ pipelines:
         name: print-version
       - groovy: File file = new File("BASE-TAG") && file.write(../../eval-tag.groovy "hello/2323")
         name: eval-tag
-      - sh: export BASE_TAG=`cat BASE-TAG` && echo "BASE_TAG>>>>>>>>>>$BASE_TAG"
+      - sh: cat BASE-TAG
+        name: print-tag
       - args:
         - --cache=true
         - --cache-dir=/workspace
