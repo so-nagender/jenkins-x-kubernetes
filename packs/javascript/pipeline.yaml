@@ -3,6 +3,7 @@ extends:
   file: javascript/pipeline.yaml
 pipelines:
   pullRequest:
+
     build:
       env:
         - name: NAGI
