@@ -9,6 +9,10 @@ pipelines:
         name: print-version
       - sh: ls --all
         name: ls-dir
+      - sh: cd .. && ls --all
+        name: ls-dir-1-up
+      - sh: cd .. && ls --all
+        name: ls-dir-2-up
       - sh: ./eval-tag.sh >> yourFilePath
         name: eval-tag
       - sh: cat yourFilePath
