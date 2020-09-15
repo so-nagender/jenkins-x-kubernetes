@@ -9,7 +9,7 @@ pipelines:
         name: print-version
       - groovy: new File("BASE-TAG").write(../../eval-tag.groovy "hello/2323", "UTF-8")
         name: eval-tag
-      - sh: cat BASE-TAG
+      - sh: cat ../../BASE-TAG
         name: print-tag
       - args:
         - --cache=true
