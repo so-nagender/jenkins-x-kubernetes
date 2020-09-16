@@ -1,0 +1,48 @@
+extends:
+  import: classic
+  file: javascript/pipeline.yaml
+pipelines:
+  pullRequest:
+    build:
+      steps:
+      - sh: echo "PR-$PULL_NUMBER"
+        name: print-version
+      - groovy: import java.io.File && new File("yourFilePath.txt").createNewFile().text="hello/2323"
+        name: eval-tag
+      - sh: ls --all
+        name: list
+      - sh: cat yourFilePath.txt
+        name: print-tag
+      - args:
+        - --cache=true
+        - --cache-dir=/workspace
+        - --context=/workspace/source
+        - --dockerfile=/workspace/source/Dockerfile
+        - --destination=${DOCKER_REGISTRY}/kubernetes/${APP_NAME}:PR-${PULL_NUMBER}
+        - --cache-repo=${DOCKER_REGISTRY}/todo/cache
+        - --skip-tls-verify-registry=${DOCKER_REGISTRY}
+        command: /kaniko/executor
+        dir: /workspace/source
+        image: gcr.io/kaniko-project/executor:v0.22.0
+        name: container-build
+    postBuild:
+      steps:
+      - sh: jx step post build --image $DOCKER_REGISTRY/kubernetes/$APP_NAME:PR-$PULL_NUMBER && printenv
+        name: post-build
+  release:
+    build:
+      steps:
+      - args:
+        - --cache=true
+        - --cache-dir=/workspace
+        - --context=/workspace/source
+        - --dockerfile=/workspace/source/Dockerfile
+        - --destination=${DOCKER_REGISTRY}/kubernetes/${APP_NAME}:${PULL_BASE_REF-latest}
+        - --cache-repo=${DOCKER_REGISTRY}/todo/cache
+        - --skip-tls-verify-registry=${DOCKER_REGISTRY}
+        command: /kaniko/executor
+        dir: /workspace/source
+        image: gcr.io/kaniko-project/executor:v0.22.0
+        name: container-build
+      - sh: jx step post build --image $DOCKER_REGISTRY/kubernetes/$APP_NAME:$PULL_BASE_REF-latest && printenv
+        name: post-build
