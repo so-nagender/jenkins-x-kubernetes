@@ -39,7 +39,7 @@ pipelines:
                   secretName: dockeronce-secret
                   items:
                     - key: .dockerconfigjson
-                      path: config.json
+                      path: config2.json
           environment:
             - name: DEPLOY_NAMESPACE
               value: jx
@@ -71,6 +71,8 @@ pipelines:
             name: list-docker-dir
           - sh: cd /home/jenkins/.docker && cat config.json
             name: docker-pass
+          - sh: cd /home/jenkins/.docker && cat config2.json
+            name: docker-pass-2
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
