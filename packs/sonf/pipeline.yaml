@@ -4,7 +4,7 @@ pipelines:
     pipeline:
       options:
         containerOptions:
-          env:
+          environment:
           - name: DOCKER_CONFIG
             value: /home/jenkins/.docker/
           - name: DOCKER_REGISTRY
@@ -53,7 +53,7 @@ pipelines:
       stages:
         - agent:
             image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
-          name: pr-release
+          name: PR-release
           steps:
           - sh: echo "logging started bhai-nagender..."
             name: log-nagender
