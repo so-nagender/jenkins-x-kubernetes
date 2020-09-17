@@ -1,5 +1,5 @@
 agent:
-    image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
+  image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
   pipelines:
     post: {}
     pullRequest:
