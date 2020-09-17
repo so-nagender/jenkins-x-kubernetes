@@ -17,7 +17,7 @@ pipelines:
     pipeline:
       stages:
         - agent:
-            image: nodejs
+            image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
           name: pull-request
           options:
             containerOptions:
