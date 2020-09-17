@@ -5,6 +5,8 @@ pipelines:
       stages:
         - agent:
             image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
+            imagePullSecrets:
+              - name: jenkins-docker-cfg
           name: pr-release
           options:
             containerOptions:
