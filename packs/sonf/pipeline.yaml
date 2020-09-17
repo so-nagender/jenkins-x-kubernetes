@@ -38,7 +38,7 @@ pipelines:
                   key: docker.registry
                   name: jenkins-x-docker-registry
             - name: GIT_AUTHOR_EMAIL
-              value: jenkins-x@googlegroups.com
+              value: jenkins-xxx@googlegroups.com
             - name: GIT_AUTHOR_NAME
               value: jenkins-x-bot
             - name: GIT_COMMITTER_EMAIL
