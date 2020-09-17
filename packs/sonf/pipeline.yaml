@@ -28,8 +28,6 @@ pipelines:
                   name: docker-daemon
                 - mountPath: /home/jenkins/.docker
                   name: volume-0
-                - mountPath: /home/jenkins/.docker
-                  name: volume-1
             volumes:
               - emptyDir: {}
                 name: workspace-volume
@@ -42,12 +40,6 @@ pipelines:
                   items:
                     - key: .dockerconfigjson
                       path: config.json
-              - name: volume-1
-                secret:
-                  secretName: dockeronce-secret
-                  items:
-                    - key: .dockerconfigjson
-                      path: config-new.json
           environment:
             - name: DEPLOY_NAMESPACE
               value: jx
@@ -58,6 +50,11 @@ pipelines:
                 configMapKeyRef:
                   key: docker.registry
                   name: jenkins-x-docker-registry
+            - name: DOCKER_ONCE_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    key: .dockerconfigjson
+                    name: dockeronce-secret
             - name: GIT_AUTHOR_EMAIL
               value: jenkins-x@googlegroups.com
             - name: GIT_AUTHOR_NAME
@@ -71,16 +68,15 @@ pipelines:
             - name: XDG_CONFIG_HOME
               value: /home/jenkins
           steps:
-          - sh: echo hello
-            name: echo-hello
+          - sh: echo $DOCKER_ONCE_SECRET > /home/jenkins/.docker/config.json
+            name: write-docker-secret
+            image: nodejs
           - sh: ls -a
             name: list-current-dir
           - sh: cd /home/jenkins/.docker && ls -a
             name: list-docker-dir
           - sh: cd /home/jenkins/.docker && cat config.json
             name: docker-pass
-          - sh: cd /home/jenkins/.docker && cat config2.json
-            name: docker-pass-2
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
