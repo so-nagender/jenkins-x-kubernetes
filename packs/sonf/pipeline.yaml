@@ -7,7 +7,7 @@ pipelines:
     pipeline:
       stages:
         - agent:
-          container: nodejs
+            container: nodejs
           name: pr-release
           options:
             containerOptions:
