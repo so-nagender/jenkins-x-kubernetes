@@ -69,6 +69,4 @@ pipelines:
             image: gcr.io/kaniko-project/executor:v0.22.0
             name: build
           - command: jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION && echo nagender
-            dir: /workspace/source
-            image: ruby
             name: post-build
