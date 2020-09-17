@@ -27,15 +27,14 @@ pipelines:
             - name: XDG_CONFIG_HOME
               value: /home/jenkins
           volumes:
-            volumes:
-              - emptyDir: {}
-                name: workspace-volume
-              - hostPath:
-                  path: /var/run/docker.sock
-                name: docker-daemon
-              - name: volume-0
-                secret:
-                  secretName: jenkins-docker-cfg
+            - emptyDir: {}
+              name: workspace-volume
+            - hostPath:
+                path: /var/run/docker.sock
+              name: docker-daemon
+            - name: volume-0
+              secret:
+                secretName: jenkins-docker-cfg
           containerOptions:
             volumeMounts:
               - mountPath: /home/jenkins
