@@ -57,6 +57,14 @@ pipelines:
             image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
           name: pr-release
           steps:
+          - sh: echo "logging started bhai-nagender..."
+            name: log-nagender
+          - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
+            name: npmrc
+          - sh: npm install
+            name: npm-install
+          - sh: CI=true DISPLAY=:99 npm test
+            name: npm-test
           - args:
             - --cache=true
             - --cache-dir=/workspace
