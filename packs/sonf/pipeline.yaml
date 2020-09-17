@@ -31,14 +31,14 @@ pipelines:
                       path: config.json
           environment:
             - name: DOCKER_CONFIG
-              value: /tekton/home/.docker
+              value: /home/jenkins/.docker/
             - name: DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
                   key: docker.registry
                   name: jenkins-x-docker-registry
             - name: GIT_AUTHOR_EMAIL
-              value: jenkins-xxx@googlegroups.com
+              value: jenkins-x@googlegroups.com
             - name: GIT_AUTHOR_NAME
               value: jenkins-x-bot
             - name: GIT_COMMITTER_EMAIL
