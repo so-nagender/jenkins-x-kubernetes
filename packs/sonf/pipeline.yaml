@@ -1,6 +1,6 @@
 pipelineConfig:
   pipelines:
-    release:
+    pullRequest:
       pipeline:
         agent:
           image: gcr.io/jenkinsxio/builder-go
@@ -10,7 +10,5 @@ pipelineConfig:
         stages:
           - name: release
             steps:
-              - name: verify-preintall
-                dir: /workspace/source/env
-                command: jx
-                args: ['step','verify','preinstall']
+              - name: echo-hello
+                sh: echo hello
