@@ -26,6 +26,22 @@ pipelines:
               value: http://jenkins:8080
             - name: XDG_CONFIG_HOME
               value: /home/jenkins
+            resources:
+              limits:
+                cpu: "1"
+                memory: 1448Mi
+              requests:
+                cpu: 400m
+                memory: 600Mi
+            securityContext:
+              privileged: true
+            volumeMounts:
+            - mountPath: /home/jenkins
+              name: workspace-volume
+            - mountPath: /var/run/docker.sock
+              name: docker-daemon
+            - mountPath: /home/jenkins/.docker
+              name: volume-0
           steps:
           - sh: echo "logging started bhai-nagender..."
             name: log-nagender
