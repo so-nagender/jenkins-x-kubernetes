@@ -51,10 +51,10 @@ pipelines:
                   key: docker.registry
                   name: jenkins-x-docker-registry
             - name: DOCKER_ONCE_SECRET
-                valueFrom:
-                  secretKeyRef:
-                    key: .dockerconfigjson
-                    name: dockeronce-secret
+              valueFrom:
+                secretKeyRef:
+                  key: .dockerconfigjson
+                  name: dockeronce-secret
             - name: GIT_AUTHOR_EMAIL
               value: jenkins-x@googlegroups.com
             - name: GIT_AUTHOR_NAME
