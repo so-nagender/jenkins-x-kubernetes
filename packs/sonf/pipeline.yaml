@@ -1,9 +1,6 @@
 agent:
-    container: ruby
-    label: jenkins-ruby
-  extends:
-    file: pipeline.yaml
-    import: classic
+    image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
+    label: sonf
   pipelines:
     post: {}
     pullRequest:
