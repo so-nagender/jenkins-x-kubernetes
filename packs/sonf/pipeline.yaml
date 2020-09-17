@@ -65,8 +65,10 @@ pipelines:
           steps:
           - sh: echo hello
             name: echo-hello
-          - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
-            name: npmrc
+          - sh: ls -a
+            name: list-current-dir
+          - sh: cd /home/jenkins/.docker && ls -a
+            name: list-docker-dir
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
