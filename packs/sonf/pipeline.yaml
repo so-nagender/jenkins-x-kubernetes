@@ -53,7 +53,9 @@ pipelines:
           secret:
             secretName: jenkins-docker-cfg
       stages:
-          name: pr-build
+        - agent:
+            image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
+          name: pr-release
           steps:
           - args:
             - --cache=true
@@ -64,6 +66,9 @@ pipelines:
             - --cache-repo=dockeronce.azurecr.io/todo/cache
             - --skip-tls-verify-registry=dockeronce.azurecr.io
             command: /kaniko/executor
-            name: build-container-build
-          - command: jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION
-            name: postbuild-post-build
+            image: gcr.io/kaniko-project/executor:v0.22.0
+            name: build
+          - command: jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION && echo nagender
+            dir: /workspace/source
+            image: ruby
+            name: post-build
