@@ -15,6 +15,8 @@ pipelines:
                   name: docker-daemon
                 - mountPath: /home/jenkins/.docker
                   name: volume-0
+                - mountPath: /tekton/home/.docker
+                  name: volume-0
             volumes:
               - emptyDir: {}
                 name: workspace-volume
@@ -29,7 +31,7 @@ pipelines:
                       path: config.json
           environment:
             - name: DOCKER_CONFIG
-              value: /home/jenkins/.docker/
+              value: /tekton/home/.docker
             - name: DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
