@@ -31,7 +31,7 @@ pipelines:
                       path: config.json
           environment:
             - name: DOCKER_CONFIG
-              value: /home/jenkins/.docker/
+              value: /tekton/home/.docker/
             - name: DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
