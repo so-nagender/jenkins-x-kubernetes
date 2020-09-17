@@ -2,27 +2,28 @@ pipelines:
   post: {}
   pullRequest:
     pipeline:
-      volumes:
-        - emptyDir: {}
-          name: workspace-volume
-        - hostPath:
-            path: /var/run/docker.sock
-          name: docker-daemon
-        - name: volume-0
-          secret:
-            secretName: jenkins-docker-cfg
-      containerOptions:
-        volumeMounts:
-          - mountPath: /home/jenkins
-            name: workspace-volume
-          - mountPath: /var/run/docker.sock
-            name: docker-daemon
-          - mountPath: /home/jenkins/.docker
-            name: volume-0
       stages:
         - agent:
             image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
           name: pr-release
+          options:
+            containerOptions:
+              volumeMounts:
+                - mountPath: /home/jenkins
+                  name: workspace-volume
+                - mountPath: /var/run/docker.sock
+                  name: docker-daemon
+                - mountPath: /home/jenkins/.docker
+                  name: volume-0
+            volumes:
+              - emptyDir: {}
+                name: workspace-volume
+              - hostPath:
+                  path: /var/run/docker.sock
+                name: docker-daemon
+              - name: volume-0
+                secret:
+                  secretName: jenkins-docker-cfg
           environment:
             - name: DOCKER_CONFIG
               value: /home/jenkins/.docker/
