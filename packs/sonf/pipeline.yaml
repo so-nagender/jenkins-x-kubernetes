@@ -6,7 +6,7 @@ pipelines:
   pullRequest:
     pipeline:
       stages:
-          name: pr-release
+        - name: pr-release
           options:
             containerOptions:
               volumeMounts:
