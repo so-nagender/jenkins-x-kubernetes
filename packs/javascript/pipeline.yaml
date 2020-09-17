@@ -1,6 +1,6 @@
 pipelineConfig:
   agent:
-    image: nodejs
+    image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
     label: oh-nodejs
   pipelines:
     pullRequest:
