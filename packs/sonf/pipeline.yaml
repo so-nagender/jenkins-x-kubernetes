@@ -12,16 +12,12 @@
 #      - sh: CI=true DISPLAY=:99 npm test
 #        name: npm-test
 
-agent:
-  label: jenkins-nodejs
-  container: nodejs
 pipelines:
   pullRequest:
     pipeline:
       stages:
         - agent:
-            container: nodejs
-            label: jenkins-nodejs
+            image: nodejs
           name: pull-request
           options:
             containerOptions:
