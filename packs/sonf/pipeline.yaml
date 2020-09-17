@@ -4,9 +4,8 @@ pipelines:
     pipeline:
       stages:
         - agent:
-            image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
-            imagePullSecrets:
-              - name: jenkins-docker-cfg
+            label: jenkins-nodejs
+            container: nodejs
           name: pr-release
           options:
             containerOptions:
@@ -16,8 +15,6 @@ pipelines:
                 - mountPath: /var/run/docker.sock
                   name: docker-daemon
                 - mountPath: /home/jenkins/.docker
-                  name: volume-0
-                - mountPath: /tekton/home/.docker
                   name: volume-0
             volumes:
               - emptyDir: {}
@@ -33,7 +30,7 @@ pipelines:
                       path: config.json
           environment:
             - name: DOCKER_CONFIG
-              value: /tekton/home/.docker/
+              value: /home/jenkins/.docker/
             - name: DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
@@ -54,6 +51,8 @@ pipelines:
           steps:
           - sh: echo "logging started bhai-nagender..."
             name: log-nagender
+          - sh: node -v
+            name: node-version
           - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
             name: npmrc
           - sh: npm install
