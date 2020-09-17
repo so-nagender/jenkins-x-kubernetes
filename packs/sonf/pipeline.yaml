@@ -4,8 +4,6 @@ pipelines:
     pipeline:
       options:
         containerOptions:
-          agent:
-            image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
           env:
           - name: DOCKER_CONFIG
             value: /home/jenkins/.docker/
