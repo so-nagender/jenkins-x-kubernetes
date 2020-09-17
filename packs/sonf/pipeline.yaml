@@ -1,12 +1,10 @@
-agent:
-  label: jenkins-nodejs
-  container: nodejs
 pipelines:
   post: {}
   pullRequest:
     pipeline:
       stages:
         - agent:
+            label: jenkins-nodejs
             container: nodejs
           name: pr-release
           options:
