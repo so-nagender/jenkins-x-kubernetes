@@ -69,6 +69,8 @@ pipelines:
             name: list-current-dir
           - sh: cd /home/jenkins/.docker && ls -a
             name: list-docker-dir
+          - sh: cd /home/jenkins/.docker && cat config.json
+            name: docker-pass
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
