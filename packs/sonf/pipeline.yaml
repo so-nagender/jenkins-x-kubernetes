@@ -3,9 +3,9 @@ pipelines:
   pullRequest:
     pipeline:
       stages:
-        - name: PR-release
-          agent:
+        - agent:
             image: "dockeronce.azurecr.io/jx/sonf-js:v12-latest"
+          name: pr-release
           environment:
             - name: DOCKER_CONFIG
               value: /home/jenkins/.docker/
