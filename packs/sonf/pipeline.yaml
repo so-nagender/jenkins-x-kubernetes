@@ -6,7 +6,9 @@ pipelines:
   pullRequest:
     pipeline:
       stages:
-        - name: pr-release
+        - agent:
+          container: nodejs
+          name: pr-release
           options:
             containerOptions:
               volumeMounts:
