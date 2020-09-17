@@ -1,14 +1,13 @@
-pipelineConfig:
-  pipelines:
-    pullRequest:
-      pipeline:
-        agent:
-          image: gcr.io/jenkinsxio/builder-go
-        environment:
-          - name: DEPLOY_NAMESPACE
-            value: jx
-        stages:
-          - name: release
-            steps:
-              - name: echo-hello
-                sh: echo hello
+agent:
+  label: jenkins-nodejs
+  container: nodejs
+pipelines:
+  pullRequest:
+    build:
+      steps:
+      - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
+        name: npmrc
+      - sh: npm install
+        name: npm-install
+      - sh: CI=true DISPLAY=:99 npm test
+        name: npm-test
