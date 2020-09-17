@@ -53,9 +53,6 @@ pipelineConfig:
           - name: volume-0
             secret:
               secretName: jenkins-docker-cfg
-        stages:
-        - agent:
-          image: nodejs
       build:
         steps:
         - sh: echo "PR-$PULL_NUMBER"
