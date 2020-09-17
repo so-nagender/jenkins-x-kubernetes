@@ -24,6 +24,9 @@ pipelines:
               - name: volume-0
                 secret:
                   secretName: jenkins-docker-cfg
+                  items:
+                    - key: .dockerconfigjson
+                      path: config.json
           environment:
             - name: DOCKER_CONFIG
               value: /home/jenkins/.docker/
