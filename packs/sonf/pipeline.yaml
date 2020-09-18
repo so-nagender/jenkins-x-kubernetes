@@ -29,11 +29,6 @@ pipelines:
                 - mountPath: /var/run/docker.sock
                   name: docker-daemon
             volumes:
-              - emptyDir: {}
-                name: workspace-volume
-              - hostPath:
-                  path: /var/run/docker.sock
-                name: docker-daemon
               - name: source-path
                 secret:
                   secretName: dockeronce-secret
@@ -43,6 +38,11 @@ pipelines:
               - name: source-path
                 secret:
                   secretName: jenkins-docker-cfg
+              - emptyDir: {}
+                name: workspace-volume
+              - hostPath:
+                  path: /var/run/docker.sock
+                name: docker-daemon
           environment:
             - name: DEPLOY_NAMESPACE
               value: jx
