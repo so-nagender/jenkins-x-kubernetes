@@ -67,7 +67,7 @@ pipelines:
             name: list-current-dir
           - sh: cd /home && ls -a
             name: home
-          - sh: cd /home/oh && ls -a
+          - sh: cd /home/node && ls -a
             name: oh
           - sh: npm install
             name: npm-install
