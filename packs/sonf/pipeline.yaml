@@ -74,7 +74,7 @@ pipelines:
           #- sh: echo $DOCKER_ONCE_SECRET > /home/jenkins/.docker/config.json
           #  name: write-docker-secret
           # image: nodejs
-          - sh: ls -a
+          - sh: ls -a && pwd
             name: list-current-dir
           - sh: cd /home/jenkins/.docker && ls -a
             name: list-docker-dir
