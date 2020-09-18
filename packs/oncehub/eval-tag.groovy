@@ -1,25 +1,23 @@
-// Evaluates tag for a base branch.
-def parseTargetEnvironment(String branchName){
-    def targetEnv
-    def isStoryBranch = (branchName ==~ /.*\/story\/.*/)
-    def isTeamBranch = (branchName ==~ /team\/.*/)
-    if(isStoryBranch) {
-
-    $PULL_BASE_REF =~ /.*\/story\/.*/
-        targetEnv = branchName.replaceFirst(/\/.*/,"")
-        return targetEnv
-    } else if(isTeamBranch) {
-        targetEnv = branchName.replace("team/","")
-        return targetEnv
-    } else if(branchName == "master") {
-        return "prod"
-    }else if(branchName == "qa") {
+// Evaluates env tag.
+def parseEnv(String bN){
+    def tE
+    def isKB = (bN ==~ /.*\/kahani\/.*/)
+    def isTB = (bN ==~ /group\/.*/)
+    if(isKB)
+        tE = bN.replaceFirst(/\/.*/,"")
+        return tE
+    } else if(isTB) {
+        tE = bN.replace("group/","")
+        return tE
+    } else if(bN == "master") {
+        return "master-jack"
+    }else if(bN == "qa") {
         return "qa"
-    }else if(branchName == "staging-app2") {
-        return  branchName
+    }else if(bN == "staging") {
+        return  bN
     } else {
-        targetEnv = branchName.replace("/","-")
-        return targetEnv
+        tE = bN.replace("/","-")
+        return tE
    }
 }
-println "${parseTargetEnvironment(args[0])}";
+println "${parseEnv(args[0])}";

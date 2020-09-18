@@ -15,4 +15,4 @@ RUN apk add --no-cache git
 RUN apk --no-cache add --virtual builds-deps build-base python
 RUN apk --no-cache add openjdk8
 RUN apk --no-cache add openjdk8
-CMD cp ../oncehub .
+COPY /oncehub ./oh
