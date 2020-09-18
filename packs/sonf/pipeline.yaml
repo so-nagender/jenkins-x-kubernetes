@@ -26,8 +26,8 @@ pipelines:
             name: home
           - sh: cd /workspace && ls -a
             name: workspace
-          - sh: cd /workspace/source && ls -a
-            name: source
+          - sh: cd /usr/src && ls -a
+            name: src-oh
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
