@@ -39,7 +39,7 @@ pipelines:
                   secretName: dockeronce-secret
                   items:
                     - key: .dockerconfigjson
-                      path: config.json
+                      path: config-new.json
           environment:
             - name: DEPLOY_NAMESPACE
               value: jx
