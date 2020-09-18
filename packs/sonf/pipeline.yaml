@@ -68,8 +68,10 @@ pipelines:
           - sh: cd /home && ls -a
             name: home
           - name: script-ex
-            #script: |
-            sh: echo "iam echo insdie script"
+            workingDir: /workspace/source
+            image: docker.io/nagenderrawat/oh:sonf-v12
+            script: |
+              echo "iam echo insdie script"
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
