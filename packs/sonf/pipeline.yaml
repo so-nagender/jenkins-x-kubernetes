@@ -43,9 +43,6 @@ pipelines:
               - name: workspace-volume
                 secret:
                   secretName: jenkins-docker-cfg
-                  items:
-                    - key: config.json
-                      path: config-new.json
           environment:
             - name: DEPLOY_NAMESPACE
               value: jx
