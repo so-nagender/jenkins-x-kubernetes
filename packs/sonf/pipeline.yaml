@@ -67,8 +67,9 @@ pipelines:
             name: list-current-dir
           - sh: cd /home && ls -a
             name: home
-          - sh: cd /home/node && ls -a
-            name: oh
+          - name: script-ex
+            script: |
+              echo "iam echo insdie script"
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
