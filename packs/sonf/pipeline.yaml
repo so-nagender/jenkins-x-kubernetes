@@ -22,12 +22,12 @@ pipelines:
           options:
             containerOptions:
               volumeMounts:
+                - mountPath: /workspace/source
+                  name: source-path
                 - mountPath: /home/jenkins
                   name: workspace-volume
                 - mountPath: /var/run/docker.sock
                   name: docker-daemon
-                - mountPath: /workspace/source
-                  name: source-path
             volumes:
               - emptyDir: {}
                 name: workspace-volume
