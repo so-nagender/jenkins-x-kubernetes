@@ -26,7 +26,7 @@ pipelines:
                   name: workspace-volume
                 - mountPath: /var/run/docker.sock
                   name: docker-daemon
-                - mounthPath: /workspace/source
+                - mountPath: /workspace/source
                   name: source-path
             volumes:
               - emptyDir: {}
