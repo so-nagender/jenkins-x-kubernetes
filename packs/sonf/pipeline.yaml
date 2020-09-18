@@ -22,25 +22,25 @@ pipelines:
           options:
             containerOptions:
               volumeMounts:
-                - mountPath: /workspace
-                  name: source-path
                 - mountPath: /home/jenkins
                   name: workspace-volume
                 - mountPath: /var/run/docker.sock
                   name: docker-daemon
+                - mountPath: /workspace
+                  name: workspace-vol
             volumes:
               - emptyDir: {}
                 name: workspace-volume
               - hostPath:
                   path: /var/run/docker.sock
                 name: docker-daemon
-              - name: source-path
+              - name: workspace-vol
                 secret:
                   secretName: dockeronce-secret
                   items:
                     - key: .dockerconfigjson
                       path: config-new.json
-              - name: source-path
+              - name: workspace-vol
                 secret:
                   secretName: jenkins-docker-cfg
           environment:
@@ -82,7 +82,7 @@ pipelines:
             name: docker-pass
           - sh: cd /home/jenkins && ls -a
             name: list-home-jenkins
-          - sh: cd /workspace/source && ls -a
+          - sh: cd /workspace && ls -a
             name: ls-workspace-source
           - sh: npm install
             name: npm-install
