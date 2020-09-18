@@ -65,27 +65,10 @@ pipelines:
           # image: nodejs
           - sh: ls -a && pwd
             name: list-current-dir
-          - sh: find /bin -name "eval-tag.groovy"
-          - sh: find /dev -name "eval-tag.groovy"
-          - sh: find /etc -name "eval-tag.groovy"
-          - sh: find /home -name "eval-tag.groovy"
-          - sh: find /lib -name "eval-tag.groovy"
-          - sh: find /media -name "eval-tag.groovy"
-          - sh: find /mnt -name "eval-tag.groovy"
-          - sh: find /opt -name "eval-tag.groovy"
-          - sh: find /proc -name "eval-tag.groovy"
-          - sh: find /root -name "eval-tag.groovy"
-          - sh: find /run -name "eval-tag.groovy"
-          - sh: find /sbin -name "eval-tag.groovy"
-          - sh: find /srv -name "eval-tag.groovy"
-          - sh: find /sys -name "eval-tag.groovy"
-          - sh: find /tekton -name "eval-tag.groovy"
-          - sh: find /tmp -name "eval-tag.groovy"
-          - sh: find /usr  -name "eval-tag.groovy"
-          - sh: find /var -name "eval-tag.groovy"
-          - sh: find /workspace -name "eval-tag.groovy"
-            name: find-groovy-file
-          - sh: find /workspace -name "README.md"
+          - sh: cd /home && ls -a
+            name: home
+          - sh: cd /home/oh && ls -a
+            name: oh
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
