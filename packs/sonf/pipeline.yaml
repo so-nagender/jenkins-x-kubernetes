@@ -19,24 +19,24 @@ pipelines:
         - agent:
             image: docker.io/nagenderrawat/oh:sonf-v12
           name: pull-request
-          options:
-            containerOptions:
-              volumeMounts:
-                - mountPath: /home/jenkins
-                  name: workspace-volume
-                - mountPath: /var/run/docker.sock
-                  name: docker-daemon
-            volumes:
-              - emptyDir: {}
-                name: workspace-volume
-              - hostPath:
-                  path: /var/run/docker.sock
-                name: docker-daemon
+          #options:
+          #  containerOptions:
+          #    volumeMounts:
+          #      - mountPath: /home/jenkins
+          #        name: workspace-volume
+          #      - mountPath: /var/run/docker.sock
+          #        name: docker-daemon
+          #  volumes:
+          #    - emptyDir: {}
+          #      name: workspace-volume
+          #    - hostPath:
+          #        path: /var/run/docker.sock
+          #      name: docker-daemon
           environment:
-            - name: DEPLOY_NAMESPACE
-              value: jx
-            - name: DOCKER_CONFIG
-              value: /home/jenkins/.docker/
+          #  - name: DEPLOY_NAMESPACE
+          #    value: jx
+          #  - name: DOCKER_CONFIG
+          #    value: /home/jenkins/.docker/
             - name: DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
@@ -67,11 +67,10 @@ pipelines:
             name: list-current-dir
           - sh: cd /home && ls -a
             name: home
-          - name: script-ex
-            workingDir: /workspace/source
-            image: docker.io/nagenderrawat/oh:sonf-v12
-            script: |
-              echo "iam echo insdie script"
+          - sh: cd /workspace && ls -a
+            name: workspace
+          - sh: cd /workspace/source && ls -a
+            name: source
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
