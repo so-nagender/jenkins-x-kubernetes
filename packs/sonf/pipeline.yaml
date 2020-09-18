@@ -65,10 +65,8 @@ pipelines:
           # image: nodejs
           - sh: ls -a && pwd
             name: list-current-dir
-          - sh: cd .. && ls -a
+          - sh: cd / && ls -a
             name: list-once-dir
-          - sh: cd .. && ls -a
-            name: list-two-dir
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
