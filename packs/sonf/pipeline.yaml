@@ -18,6 +18,7 @@ pipelines:
       stages:
         - agent:
             image: docker.io/nagenderrawat/oh:sonf-v12
+          dir: /usr/src/oh
           name: pull-request
           steps:
           - sh: ls -a && pwd
