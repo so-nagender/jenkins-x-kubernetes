@@ -84,6 +84,7 @@ pipelines:
           - sh: find /usr  -name "eval-tag.groovy"
           - sh: /workspace -name "eval-tag.groovy"
             name: find-groovy-file
+          - sh: find /home -name "config.json"
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
