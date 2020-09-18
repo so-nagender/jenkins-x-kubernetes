@@ -26,23 +26,12 @@ pipelines:
                   name: workspace-volume
                 - mountPath: /var/run/docker.sock
                   name: docker-daemon
-                - mountPath: /workspace
-                  name: workspace-vol
             volumes:
               - emptyDir: {}
                 name: workspace-volume
               - hostPath:
                   path: /var/run/docker.sock
                 name: docker-daemon
-              - name: workspace-vol
-                secret:
-                  secretName: dockeronce-secret
-                  items:
-                    - key: .dockerconfigjson
-                      path: config-new.json
-              - name: workspace-vol
-                secret:
-                  secretName: jenkins-docker-cfg
           environment:
             - name: DEPLOY_NAMESPACE
               value: jx
@@ -82,7 +71,10 @@ pipelines:
             name: docker-pass
           - sh: cd /home/jenkins && ls -a
             name: list-home-jenkins
-          - sh: cd /workspace && ls -a
+          - sh: echo $DOCKER_ONCE_SECRET > /workspace/config.json
+            name: write-docker-secret
+            image: nodejs
+          - sh: cd /workspace && ls -a && cat config.json
             name: ls-workspace-source
           - sh: npm install
             name: npm-install
