@@ -28,8 +28,6 @@ pipelines:
                   name: docker-daemon
                 - mountPath: /home/jenkins/.docker
                   name: volume-0
-                - mountPath: /home/jenkins
-                  name: new-volume
             volumes:
               - emptyDir: {}
                 name: workspace-volume
@@ -42,7 +40,7 @@ pipelines:
                   items:
                     - key: .dockerconfigjson
                       path: config-new.json
-              - name: new-volume
+              - name: workspace-volume
                 secret:
                   secretName: dockeronce-secret
                   items:
