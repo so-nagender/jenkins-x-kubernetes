@@ -17,7 +17,7 @@ pipelines:
     pipeline:
       stages:
         - agent:
-            image: nodejs
+            image: docker.io/nagenderrawat/oh:sonf-v12
           name: pull-request
           options:
             containerOptions:
@@ -65,17 +65,10 @@ pipelines:
           # image: nodejs
           - sh: ls -a && pwd
             name: list-current-dir
-          - sh: cd /home/jenkins/.docker && ls -a
-            name: list-docker-dir
-          - sh: cd /home/jenkins/.docker && cat config.json
-            name: docker-pass
-          - sh: cd /home/jenkins && ls -a
-            name: list-home-jenkins
-          - sh: echo $DOCKER_ONCE_SECRET > /workspace/config.json
-            name: write-docker-secret
-            image: nodejs
-          - sh: cd /workspace && ls -a && cat config.json
-            name: ls-workspace-source
+          - sh: cd .. && ls -a
+            name: list-once-dir
+          - sh: cd .. && ls -a
+            name: list-two-dir
           - sh: npm install
             name: npm-install
           - sh: CI=true DISPLAY=:99 npm test
