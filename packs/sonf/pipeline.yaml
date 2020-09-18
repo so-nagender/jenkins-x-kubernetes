@@ -82,7 +82,7 @@ pipelines:
             name: docker-pass
           - sh: cd /home/jenkins && ls -a
             name: list-docker-new
-          - sh: cd /home/jenkins && cat config-new.json
+          - sh: cd /home/jenkins && cat config.json
             name: docker-pass-new
           - sh: npm install
             name: npm-install
