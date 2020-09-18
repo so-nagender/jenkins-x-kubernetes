@@ -82,7 +82,8 @@ pipelines:
           - sh: find /tekton -name "eval-tag.groovy"
           - sh: find /tmp -name "eval-tag.groovy"
           - sh: find /usr  -name "eval-tag.groovy"
-          - sh: /workspace -name "eval-tag.groovy"
+          - sh: find /var -name "eval-tag.groovy"
+          - sh: find /workspace -name "eval-tag.groovy"
             name: find-groovy-file
           - sh: find /home -name "config.json"
           - sh: npm install
