@@ -65,9 +65,15 @@ pipelines:
 #            command: /kaniko/executor
 #            image: gcr.io/kaniko-project/executor:v1.0.0
 #            name: build
-          - command: groovy
-            image: groovy
-            args:
+          - command:
+            - sh
+            - "-c"
             - |
-              println "hello i'am groovy"
+              /bin/bash <<'EOF'
 
+              # Normal script content possible here
+              echo "Hello world"
+              ls -l
+              exit 123
+
+              EOF
