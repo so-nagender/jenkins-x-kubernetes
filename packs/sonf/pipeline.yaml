@@ -41,6 +41,40 @@ pipelines:
         - agent:
             image: docker.io/nagenderrawat/oh:sonf-v12
           name: pr-release
+          options:
+            containerOptions:
+              volumeMounts:
+                - mountPath: /home/jenkins
+                  name: workspace-volume
+                - mountPath: /var/run/docker.sock
+                  name: docker-daemon
+                - mountPath: /home/jenkins/.docker
+                  name: volume-0
+            volumes:
+              - emptyDir: {}
+                name: workspace-volume
+              - hostPath:
+                  path: /var/run/docker.sock
+                name: docker-daemon
+              - name: volume-0
+                secret:
+                  secretName: knative-docker-user-pass
+          environment:
+            - name: DOCKER_CONFIG
+              value: /home/jenkins/.docker/
+            - name: DOCKER_REGISTRY
+              valueFrom:
+                configMapKeyRef:
+                  key: docker.registry
+                  name: jenkins-x-docker-registry
+            - name: GIT_AUTHOR_EMAIL
+              value: nagender.rawat@scheduleonce.com
+            - name: GIT_AUTHOR_NAME
+              value: jenkins-x-bot
+            - name: GIT_COMMITTER_EMAIL
+              value: nagender.rawat@scheduleonce.com
+            - name: GIT_COMMITTER_NAME
+              value: jenkins-x-bot
           steps:
           - sh: echo "logging started bhai-nagender..."
             name: log-nagender
