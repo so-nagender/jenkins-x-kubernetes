@@ -46,8 +46,6 @@ pipelines:
             - name: GIT_COMMITTER_NAME
               value: jenkins-x-bot
           steps:
-          - sh: echo "logging started bhai-nagender..."
-            name: log-nagender
           - sh: node -v
             name: node-version
           - sh: npm install
