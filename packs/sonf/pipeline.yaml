@@ -58,7 +58,9 @@ pipelines:
                 name: docker-daemon
               - name: volume-0
                 secret:
-                  secretName: knative-docker-user-pass
+                  name: jenkins-docker-cfg
+                  - key: .dockerconfigjson
+                    path: config.json
           environment:
             - name: DOCKER_CONFIG
               value: /home/jenkins/.docker/
