@@ -65,17 +65,28 @@ pipelines:
 #            command: /kaniko/executor
 #            image: gcr.io/kaniko-project/executor:v1.0.0
 #            name: build
+#          - name: eval-tag
+#            image: alpine:3.7
+#            command: /bin/sh
+#            args:
+#            - -c
+#            - |
+#              /bin/sh <<'EOF'
+#
+#              # Normal script content possible here
+#              echo "Hello world"
+#              ls -l
+#              exit 123
+#
+#              EOF
           - name: eval-tag
-            image: alpine:3.7
-            command: /bin/sh
+            image: groovy
+            command: groovy
             args:
             - -c
             - |
-              /bin/sh <<'EOF'
+              groovy <<'EOF'
 
-              # Normal script content possible here
-              echo "Hello world"
-              ls -l
-              exit 123
+              println "Hello world"
 
               EOF
