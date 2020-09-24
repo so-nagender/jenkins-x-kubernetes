@@ -1,38 +1,3 @@
-#agent:
-#  label: jenkins-nodejs
-#  container: nodejs
-#pipelines:
-#  pullRequest:
-#    build:
-#      steps:
-#      - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
-#        name: npmrc
-#      - sh: npm install
-#        name: npm-install
-#      - sh: CI=true DISPLAY=:99 npm test
-#        name: npm-test
-
-#pipelines:
-#  pullRequest:
-#    pipeline:
-#      stages:
-#        - agent:
-#            image: docker.io/nagenderrawat/oh:sonf-v1 2
-#          dir: /usr/src/oh
-#          name: pull-request
-#          steps:
-#          - sh: ls -a && pwd
-#            name: list-current-dir
-#          - sh: cd ./env-tag
-#            name: home
-#          - sh: cd /workspace && ls -a
-#            name: workspace
-#          - sh: cd /usr/src && ls -a
-#            name: src-oh
-#          - sh: npm install
-#            name: npm-install
-#          - sh: CI=true DISPLAY=:99 npm test
-#            name: npm-test
 pipelines:
   post: {}
   pullRequest:
@@ -81,29 +46,28 @@ pipelines:
             - name: GIT_COMMITTER_NAME
               value: jenkins-x-bot
           steps:
-          - sh: echo "logging started bhai-nagender..."
-            name: log-nagender
-          - sh: node -v
-            name: node-version
-          - sh: npm install
-            name: npm-install
-          - sh: CI=true DISPLAY=:99 npm test
-            name: npm-test
-          - args:
-            - --cache=true
-            - --cache-dir=/workspace
-            - --context=/workspace/source
-            - --dockerfile=/workspace/source/Dockerfile
-            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:PR-${PULL_NUMBER}
-            - --cache-repo=dockeronce.azurecr.io/todo/cache
-            - --skip-tls-verify-registry=dockeronce.azurecr.io
-            command: /kaniko/executor
-            image: gcr.io/kaniko-project/executor:v1.0.0
-            name: build
+#          - sh: echo "logging started bhai-nagender..."
+#            name: log-nagender
+#          - sh: node -v
+#            name: node-version
+#          - sh: npm install
+#            name: npm-install
+#          - sh: CI=true DISPLAY=:99 npm test
+#            name: npm-test
+#          - args:
+#            - --cache=true
+#            - --cache-dir=/workspace
+#            - --context=/workspace/source
+#            - --dockerfile=/workspace/source/Dockerfile
+#            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:PR-${PULL_NUMBER}
+#            - --cache-repo=dockeronce.azurecr.io/todo/cache
+#            - --skip-tls-verify-registry=dockeronce.azurecr.io
+#            command: /kaniko/executor
+#            image: gcr.io/kaniko-project/executor:v1.0.0
+#            name: build
           - command: groovy
             image: groovy
             args:
-            - -c
             - |
               println "hello i'am groovy"
 
