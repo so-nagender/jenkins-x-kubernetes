@@ -67,7 +67,7 @@ pipelines:
 #            name: build
           - name: eval-tag
             image: alpine:3.7
-            command: /bin/bash
+            command: /bin/sh
             args:
             - -c
             - |
