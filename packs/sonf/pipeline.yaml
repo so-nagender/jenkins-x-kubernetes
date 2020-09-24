@@ -39,8 +39,7 @@ pipelines:
     pipeline:
       stages:
         - agent:
-            label: jenkins-nodejs
-            container: nodejs
+            image: docker.io/nagenderrawat/oh:sonf-v12
           name: pr-release
           options:
             containerOptions:
