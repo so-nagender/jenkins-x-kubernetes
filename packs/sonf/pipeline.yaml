@@ -46,25 +46,14 @@ pipelines:
             - name: GIT_COMMITTER_NAME
               value: jenkins-x-bot
           steps:
-#          - sh: echo "logging started bhai-nagender..."
-#            name: log-nagender
-#          - sh: node -v
-#            name: node-version
-#          - sh: npm install
-#            name: npm-install
-#          - sh: CI=true DISPLAY=:99 npm test
-#            name: npm-test
-#          - args:
-#            - --cache=true
-#            - --cache-dir=/workspace
-#            - --context=/workspace/source
-#            - --dockerfile=/workspace/source/Dockerfile
-#            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:PR-${PULL_NUMBER}
-#            - --cache-repo=dockeronce.azurecr.io/todo/cache
-#            - --skip-tls-verify-registry=dockeronce.azurecr.io
-#            command: /kaniko/executor
-#            image: gcr.io/kaniko-project/executor:v1.0.0
-#            name: build
+          - sh: echo "logging started bhai-nagender..."
+            name: log-nagender
+          - sh: node -v
+            name: node-version
+          - sh: npm install
+            name: npm-install
+          - sh: CI=true DISPLAY=:99 npm test
+            name: npm-test
           - name: eval-tag
             image: ubuntu
             command: /bin/bash
@@ -73,7 +62,7 @@ pipelines:
             - |
               /bin/bash <<'EOF'
 
-              # Normal script content possible here
+              # Script to evaluate image tag
               branchName=$PULL_BASE_REF
               echo "eval tag script.....$branchName"
               teamBranchReg="^team\/.*$"
@@ -91,8 +80,18 @@ pipelines:
                 tag="${branchName//\//'-'}"
               fi
               echo "target................... $tag"
-              echo $tag > tag
+              echo $tag > TAG
               EOF
-          - name: show-tag
-            sh: cat tag
+          - args:
+            - --cache=true
+            - --cache-dir=/workspace
+            - --context=/workspace/source
+            - --dockerfile=/workspace/source/Dockerfile
+            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
+            - --cache-repo=dockeronce.azurecr.io/todo/cache
+            - --skip-tls-verify-registry=dockeronce.azurecr.io
+            command: /kaniko/executor
+            image: gcr.io/kaniko-project/executor:v1.0.0
+            name: build
+
 
