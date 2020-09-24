@@ -85,7 +85,7 @@ pipelines:
             args:
             - -c
             - |
-              groovy <<'EOF'
+              groovy -e=<<'EOF'
 
               println "Hello world"
 
