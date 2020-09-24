@@ -39,7 +39,7 @@ pipelines:
     pipeline:
       stages:
         - agent:
-            image: dockeronce.azurecr.io/cloudbees/nodejs:sonf-v12-latest-user
+            image: docker.io/nagenderrawat/oh:sonf-v12
           name: pr-release
           options:
             containerOptions:
