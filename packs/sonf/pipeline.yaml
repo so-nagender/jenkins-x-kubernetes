@@ -65,9 +65,8 @@ pipelines:
 #            command: /kaniko/executor
 #            image: gcr.io/kaniko-project/executor:v1.0.0
 #            name: build
-          - command:
-            - sh
-            - "-c"
+          - command: /bin/bash
+            - -c
             - |
               /bin/bash <<'EOF'
 
