@@ -100,4 +100,9 @@ pipelines:
             command: /kaniko/executor
             image: gcr.io/kaniko-project/executor:v1.0.0
             name: build
+          - command: groovy
+            args:
+            - -c
+            - |
+              println "hello i'am groovy"
 
