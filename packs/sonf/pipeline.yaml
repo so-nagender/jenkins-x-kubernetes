@@ -94,7 +94,7 @@ pipelines:
             - --cache-dir=/workspace
             - --context=/workspace/source
             - --dockerfile=/workspace/source/Dockerfile
-            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:${inputs.params.version}
+            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:${PULL_NUMBER}
             - --cache-repo=dockeronce.azurecr.io/todo/cache
             - --skip-tls-verify-registry=dockeronce.azurecr.io
             command: /kaniko/executor
