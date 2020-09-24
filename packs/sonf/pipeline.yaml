@@ -67,11 +67,11 @@ pipelines:
 #            name: build
           - name: eval-tag
             image: alpine:3.7
-            command: /bin/sh
+            command: /bin/bash
             args:
             - -c
             - |
-              /bin/sh <<'EOF'
+              /bin/bash <<'EOF'
 
               # Normal script content possible here
               branchName=$PULL_BASE_REF
