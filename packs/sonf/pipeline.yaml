@@ -46,43 +46,54 @@ pipelines:
             - name: GIT_COMMITTER_NAME
               value: jenkins-x-bot
           steps:
-#          - sh: echo "logging started bhai-nagender..."
-#            name: log-nagender
-#          - sh: node -v
-#            name: node-version
-#          - sh: npm install
-#            name: npm-install
-#          - sh: CI=true DISPLAY=:99 npm test
-#            name: npm-test
-#          - args:
-#            - --cache=true
-#            - --cache-dir=/workspace
-#            - --context=/workspace/source
-#            - --dockerfile=/workspace/source/Dockerfile
-#            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:PR-${PULL_NUMBER}
-#            - --cache-repo=dockeronce.azurecr.io/todo/cache
-#            - --skip-tls-verify-registry=dockeronce.azurecr.io
-#            command: /kaniko/executor
-#            image: gcr.io/kaniko-project/executor:v1.0.0
-#            name: build
-#          - name: eval-tag
-#            image: alpine:3.7
-#            command: /bin/sh
-#            args:
-#            - -c
-#            - |
-#              /bin/sh <<'EOF'
-#
-#              # Normal script content possible here
-#              echo "Hello world"
-#              ls -l
-#              exit 123
-#
-#              EOF
+          - sh: echo "logging started bhai-nagender..."
+            name: log-nagender
+          - sh: node -v
+            name: node-version
+          - sh: npm install
+            name: npm-install
+          - sh: CI=true DISPLAY=:99 npm test
+            name: npm-test
+          - args:
+            - --cache=true
+            - --cache-dir=/workspace
+            - --context=/workspace/source
+            - --dockerfile=/workspace/source/Dockerfile
+            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:PR-${PULL_NUMBER}
+            - --cache-repo=dockeronce.azurecr.io/todo/cache
+            - --skip-tls-verify-registry=dockeronce.azurecr.io
+            command: /kaniko/executor
+            image: gcr.io/kaniko-project/executor:v1.0.0
+            name: build
           - name: eval-tag
-            image: groovy
-            command: groovy
+            image: alpine:3.7
+            command: /bin/sh
             args:
-              - -e
-              - println "Hello world";
+            - -c
+            - |
+              /bin/sh <<'EOF'
+
+              # Normal script content possible here
+              echo "eval tag script....."
+              branchName=$1
+              teamBranchReg="^team\/.*$"
+              storyBranchReg="^.*\/story\/.*$"
+              if [[ $branchName =~ $teamBranchReg ]]; then
+                tag="${branchName/team\//''}"
+              elif [[ $branchName =~ $storyBranchReg ]]; then
+                echo "story $branchName"
+                tag="${branchName//\/.*/''}"
+              elif [[ $branchName == "master" ]]; then
+                tag="prod"
+              elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
+                tag=$branchName
+              else
+                echo "random branch...."
+                tag="${branchName//\//'-'}"
+              fi
+              echo "target................... $tag"
+              echo $tag > tag
+              EOF
+          - name: show-tag
+            sh: cat tag
 
