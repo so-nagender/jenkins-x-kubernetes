@@ -81,11 +81,8 @@ pipelines:
 #              EOF
           - name: eval-tag
             image: groovy
-            command: groovy
-            args:
-            - -c
-            - |
-              groovy -e=<<'EOF'
+            groovy:
+            - -e=<<'EOF'
 
               println "Hello world"
 
