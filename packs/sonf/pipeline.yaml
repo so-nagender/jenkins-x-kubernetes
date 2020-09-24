@@ -58,7 +58,8 @@ pipelines:
                 name: docker-daemon
               - name: volume-0
                 secret:
-                  name: jenkins-docker-cfg
+                  secretName: jenkins-docker-cfg
+                  items:
                   - key: .dockerconfigjson
                     path: config.json
           environment:
