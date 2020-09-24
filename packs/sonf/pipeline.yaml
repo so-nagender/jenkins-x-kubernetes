@@ -101,6 +101,7 @@ pipelines:
             image: gcr.io/kaniko-project/executor:v1.0.0
             name: build
           - command: groovy
+            image: groovy
             args:
             - -c
             - |
