@@ -59,8 +59,8 @@ pipelines:
             - -c
             - |
               /bin/bash <<'EOF'
-
               # Script to evaluate image tag
+              
               branchName=$PULL_BASE_REF
               echo "eval tag script.....$branchName"
               teamBranchReg="^team\/.*$"
