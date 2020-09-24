@@ -66,6 +66,7 @@ pipelines:
 #            image: gcr.io/kaniko-project/executor:v1.0.0
 #            name: build
           - name: eval-tag
+            image: ubuntu
             command: /bin/bash
             args:
             - -c
