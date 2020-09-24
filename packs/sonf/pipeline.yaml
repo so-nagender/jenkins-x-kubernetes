@@ -66,11 +66,11 @@ pipelines:
 #            image: gcr.io/kaniko-project/executor:v1.0.0
 #            name: build
           - name: eval-tag
-            command:
+            command: /bin/bash
             args:
             - -c
             - |
-              /bin/bash <<'EOF'
+              <<'EOF'
 
               # Normal script content possible here
               echo "Hello world"
