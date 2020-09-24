@@ -83,5 +83,6 @@ pipelines:
             image: groovy
             command: groovy
             args:
+              - -e
               - println "Hello world";
 
