@@ -65,6 +65,8 @@ pipelines:
           environment:
             - name: DOCKER_CONFIG
               value: /home/jenkins/.docker/
+            - name: DOCKER_REGISTRY_ORG
+              value: "kubernetes"
             - name: DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
@@ -92,12 +94,10 @@ pipelines:
             - --cache-dir=/workspace
             - --context=/workspace/source
             - --dockerfile=/workspace/source/Dockerfile
-            - --destination=dockeronce.azurecr.io/so-nagender/startup-with-node:${inputs.params.version}
+            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:${inputs.params.version}
             - --cache-repo=dockeronce.azurecr.io/todo/cache
             - --skip-tls-verify-registry=dockeronce.azurecr.io
             command: /kaniko/executor
             image: gcr.io/kaniko-project/executor:v1.0.0
             name: build
-          - command: jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION && echo nagender
-            name: post-build
 
