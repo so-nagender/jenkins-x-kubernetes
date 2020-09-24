@@ -65,7 +65,9 @@ pipelines:
 #            command: /kaniko/executor
 #            image: gcr.io/kaniko-project/executor:v1.0.0
 #            name: build
-          - command: /bin/bash
+          - name: eval-tag
+            command: /bin/bash
+            args:
             - -c
             - |
               /bin/bash <<'EOF'
