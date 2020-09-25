@@ -45,49 +45,75 @@ pipelines:
               value: nagender.rawat@scheduleonce.com
             - name: GIT_COMMITTER_NAME
               value: jenkins-x-bot
-          steps:
-          - sh: node -v
-            name: node-version
-          - sh: npm install
-            name: npm-install
-          - sh: CI=true DISPLAY=:99 npm test
-            name: npm-test
-          - name: eval-tag
-            image: ubuntu
-            command: /bin/bash
-            args:
-            - -c
-            - |
-              /bin/bash <<'EOF'
-              # Script to evaluate image tag
 
-              branchName=$PULL_BASE_REF
-              echo "eval tag script for $branchName branch..."
-              teamBranchReg="team\/.*"
-              storyBranchReg=".*\/story\/.*"
-              if [[ $branchName =~ $teamBranchReg ]]; then
-                tag=$(echo $branchName | sed 's/team\//''/g' )
-              elif [[ $branchName =~ $storyBranchReg ]]; then
-                tag=$(echo $branchName | sed 's/\/.*/''/g' )
-              elif [[ $branchName == "master" ]]; then
-                tag="prod"
-              elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
-                tag=$branchName
-              else
-                tag="${branchName//\//'-'}"
-              fi
-              echo $tag > TAG
-              EOF
-          - args:
-            - --cache=true
-            - --cache-dir=/workspace
-            - --context=/workspace/source
-            - --dockerfile=/workspace/source/Dockerfile
-            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
-            - --cache-repo=dockeronce.azurecr.io/todo/cache
-            - --skip-tls-verify-registry=dockeronce.azurecr.io
-            command: /kaniko/executor
-            image: gcr.io/kaniko-project/executor:v1.0.0
-            name: build
+
+          sonar.projectKey=oncehub-api
+          sonar.projectName=oncehub-api
+          sonar.projectVersion=1.0
+          sonar.sourceEncoding=UTF-8
+          sonar.sources=./lib/src
+          sonar.exclusions=**/node_modules/**,**/*.spec.ts
+          sonar.tests=./lib/specs
+          sonar.test.inclusions=**/*.spec.ts
+          sonar.javascript.lcov.reportPaths=artifacts/coverage/lcov.info
+
+          steps:
+          - command: sonar-scanner
+            name: sonar
+            dir: /workspace/source/
+            image: sonarsource/sonar-scanner-cli
+            args:
+            - -Dsonar.projectName=$APP_NAME
+            - -Dsonar.projectKey=$APP_NAME
+            - -Dsonar.organization=oncehub
+            - -Dsonar.sources=./lib/src
+            - -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+            - -Dsonar.sourceEncoding=UTF-8
+            - -Dsonar.projectVersion=1.0
+            - -Dsonar.tests=./lib/specs
+            - -Dsonar.test.inclusions=**/*.spec.ts
+            - -Dsonar.javascript.lcov.reportPaths=artifacts/coverage/lcov.info
+            - -Dsonar.host.url=https://sonarqube.onceplatform.com
+#          - sh: npm install
+#            name: npm-install
+#          - sh: CI=true DISPLAY=:99 npm test
+#            name: npm-test
+#          - name: eval-tag
+#            image: ubuntu
+#            command: /bin/bash
+#            args:
+#            - -c
+#            - |
+#              /bin/bash <<'EOF'
+#              # Script to evaluate image tag
+#
+#              branchName=$PULL_BASE_REF
+#              echo "eval tag script for $branchName branch..."
+#              teamBranchReg="team\/.*"
+#              storyBranchReg=".*\/story\/.*"
+#              if [[ $branchName =~ $teamBranchReg ]]; then
+#                tag=$(echo $branchName | sed 's/team\//''/g' )
+#              elif [[ $branchName =~ $storyBranchReg ]]; then
+#                tag=$(echo $branchName | sed 's/\/.*/''/g' )
+#              elif [[ $branchName == "master" ]]; then
+#                tag="prod"
+#              elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
+#                tag=$branchName
+#              else
+#                tag="${branchName//\//'-'}"
+#              fi
+#              echo $tag > TAG
+#              EOF
+#          - args:
+#            - --cache=true
+#            - --cache-dir=/workspace
+#            - --context=/workspace/source
+#            - --dockerfile=/workspace/source/Dockerfile
+#            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
+#            - --cache-repo=dockeronce.azurecr.io/todo/cache
+#            - --skip-tls-verify-registry=dockeronce.azurecr.io
+#            command: /kaniko/executor
+#            image: gcr.io/kaniko-project/executor:v1.0.0
+#            name: build
 
 
