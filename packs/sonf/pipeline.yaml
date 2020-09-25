@@ -61,7 +61,7 @@ pipelines:
             - -Dsonar.tests=./lib/specs
             - -Dsonar.test.inclusions=**/*.spec.ts
             - -Dsonar.javascript.lcov.reportPaths=artifacts/coverage/lcov.info
-            - -Dsonar.host.url=https://sonarqube.onceplatform.com
+            - -Dsonar.host.url=http://sonarqube.sonarqube
 #          - sh: npm install
 #            name: npm-install
 #          - sh: CI=true DISPLAY=:99 npm test
