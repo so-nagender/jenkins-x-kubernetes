@@ -54,13 +54,10 @@ pipelines:
             - -Dsonar.projectName=$APP_NAME
             - -Dsonar.projectKey=$APP_NAME
             - -Dsonar.organization=oncehub
-            - -Dsonar.sources=./lib/src
-            - -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+            - -Dsonar.sources=.
+            - -Dsonar.exclusions=**/node_modules/**
             - -Dsonar.sourceEncoding=UTF-8
             - -Dsonar.projectVersion=1.0
-            - -Dsonar.tests=./lib/specs
-            - -Dsonar.test.inclusions=**/*.spec.ts
-            - -Dsonar.javascript.lcov.reportPaths=artifacts/coverage/lcov.info
             - -Dsonar.host.url=http://sonarqube.onceplatform.com
 #          - sh: npm install
 #            name: npm-install
