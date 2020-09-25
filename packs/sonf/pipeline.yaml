@@ -53,7 +53,6 @@ pipelines:
             args:
             - -Dsonar.projectName=$APP_NAME
             - -Dsonar.projectKey=$APP_NAME
-            - -Dsonar.organization=oncehub
             - -Dsonar.sources=.
             - -Dsonar.exclusions=**/node_modules/**
             - -Dsonar.sourceEncoding=UTF-8
