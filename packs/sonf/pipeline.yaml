@@ -62,22 +62,20 @@ pipelines:
               # Script to evaluate image tag
 
               branchName=$PULL_BASE_REF
-              echo "eval tag script.....$branchName"
-              teamBranchReg="^team\/.*$"
-              storyBranchReg="^.*\/story\/.*$"
+              echo "eval tag script for $branchName branch..."
+              teamBranchReg="team\/.*"
+              storyBranchReg=".*\/story\/.*"
               if [[ $branchName =~ $teamBranchReg ]]; then
-                tag="${branchName/team\//''}"
+                tag=$(echo $branchName | sed 's/team\//''/g' )
               elif [[ $branchName =~ $storyBranchReg ]]; then
-                tag="${branchName//\/.*/''}"
+                tag=$(echo $branchName | sed 's/\/.*/''/g' )
               elif [[ $branchName == "master" ]]; then
                 tag="prod"
               elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
                 tag=$branchName
               else
-                echo "random branch...."
                 tag="${branchName//\//'-'}"
               fi
-              echo "target................... $tag"
               echo $tag > TAG
               EOF
           - args:
