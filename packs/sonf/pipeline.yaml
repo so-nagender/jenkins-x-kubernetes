@@ -45,18 +45,6 @@ pipelines:
               value: nagender.rawat@scheduleonce.com
             - name: GIT_COMMITTER_NAME
               value: jenkins-x-bot
-
-
-          sonar.projectKey=oncehub-api
-          sonar.projectName=oncehub-api
-          sonar.projectVersion=1.0
-          sonar.sourceEncoding=UTF-8
-          sonar.sources=./lib/src
-          sonar.exclusions=**/node_modules/**,**/*.spec.ts
-          sonar.tests=./lib/specs
-          sonar.test.inclusions=**/*.spec.ts
-          sonar.javascript.lcov.reportPaths=artifacts/coverage/lcov.info
-
           steps:
           - command: sonar-scanner
             name: sonar
