@@ -57,7 +57,7 @@ pipelines:
             - -Dsonar.exclusions=**/node_modules/**
             - -Dsonar.sourceEncoding=UTF-8
             - -Dsonar.projectVersion=1.0
-            - -Dsonar.host.url=http://sonarqube.onceplatform.com
+            - -Dsonar.host.url=http://sq.sonarqube-sonarqube:9000
 #          - sh: npm install
 #            name: npm-install
 #          - sh: CI=true DISPLAY=:99 npm test
