@@ -1,8 +1,13 @@
-agent:
-  label: jenkins-nodejs
-  container: nodejs
 pipelines:
   pullRequest:
+    preBuild:
+      steps:
+      - sh: echo "pre build"
+        name: post-build
+    postBuild:
+      steps:
+      - sh: echo "I'am post build first"
+        name: post-build
     build:
       steps:
       - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
