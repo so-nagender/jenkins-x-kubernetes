@@ -1,38 +1,36 @@
-#extends:
-#  file: ../pipeline.yaml
-#agent:
-#  image: docker.io/nagenderrawat/oh:sonf-v12
-#env:
-#  - name: DOCKER_CONFIG
-#    value: /home/jenkins/.docker/
-#  - name: DOCKER_REGISTRY_ORG
-#    value: "kubernetes"
-#  - name: DOCKER_REGISTRY
-#    valueFrom:
-#      configMapKeyRef:
-#        key: docker.registry
-#        name: jenkins-x-docker-registry
-#options:
-#  containerOptions:
-#    volumeMounts:
-#      - mountPath: /home/jenkins
-#        name: workspace-volume
-#      - mountPath: /var/run/docker.sock
-#        name: docker-daemon
-#      - mountPath: /home/jenkins/.docker
-#        name: volume-0
-#  volumes:
-#    - emptyDir: {}
-#      name: workspace-volume
-#    - hostPath:
-#        path: /var/run/docker.sock
-#      name: docker-daemon
-#    - name: volume-0
-#      secret:
-#        secretName: jenkins-docker-cfg
-#        items:
-#        - key: .dockerconfigjson
-#          path: config.json
+agent:
+  image: docker.io/nagenderrawat/oh:sonf-v12
+env:
+  - name: DOCKER_CONFIG
+    value: /home/jenkins/.docker/
+  - name: DOCKER_REGISTRY_ORG
+    value: "kubernetes"
+  - name: DOCKER_REGISTRY
+    valueFrom:
+      configMapKeyRef:
+        key: docker.registry
+        name: jenkins-x-docker-registry
+options:
+  containerOptions:
+    volumeMounts:
+      - mountPath: /home/jenkins
+        name: workspace-volume
+      - mountPath: /var/run/docker.sock
+        name: docker-daemon
+      - mountPath: /home/jenkins/.docker
+        name: volume-0
+  volumes:
+    - emptyDir: {}
+      name: workspace-volume
+    - hostPath:
+        path: /var/run/docker.sock
+      name: docker-daemon
+    - name: volume-0
+      secret:
+        secretName: jenkins-docker-cfg
+        items:
+        - key: .dockerconfigjson
+          path: config.json
 #pipelines:
 #  pullRequest:
 #    pipeline:
@@ -61,39 +59,39 @@
 pipelines:
   pullRequest:
     pipeline:
-      agent:
-        image: docker.io/nagenderrawat/oh:sonf-v12
-      environment:
-        - name: DOCKER_CONFIG
-          value: /home/jenkins/.docker/
-        - name: DOCKER_REGISTRY_ORG
-          value: "kubernetes"
-        - name: DOCKER_REGISTRY
-          valueFrom:
-            configMapKeyRef:
-              key: docker.registry
-              name: jenkins-x-docker-registry
-      options:
-        containerOptions:
-          volumeMounts:
-            - mountPath: /home/jenkins
-              name: workspace-volume
-            - mountPath: /var/run/docker.sock
-              name: docker-daemon
-            - mountPath: /home/jenkins/.docker
-              name: volume-0
-        volumes:
-          - emptyDir: {}
-            name: workspace-volume
-          - hostPath:
-              path: /var/run/docker.sock
-            name: docker-daemon
-          - name: volume-0
-            secret:
-              secretName: jenkins-docker-cfg
-              items:
-              - key: .dockerconfigjson
-                path: config.json
+#      agent:
+#        image: docker.io/nagenderrawat/oh:sonf-v12
+#      environment:
+#        - name: DOCKER_CONFIG
+#          value: /home/jenkins/.docker/
+#        - name: DOCKER_REGISTRY_ORG
+#          value: "kubernetes"
+#        - name: DOCKER_REGISTRY
+#          valueFrom:
+#            configMapKeyRef:
+#              key: docker.registry
+#              name: jenkins-x-docker-registry
+#      options:
+#        containerOptions:
+#          volumeMounts:
+#            - mountPath: /home/jenkins
+#              name: workspace-volume
+#            - mountPath: /var/run/docker.sock
+#              name: docker-daemon
+#            - mountPath: /home/jenkins/.docker
+#              name: volume-0
+#        volumes:
+#          - emptyDir: {}
+#            name: workspace-volume
+#          - hostPath:
+#              path: /var/run/docker.sock
+#            name: docker-daemon
+#          - name: volume-0
+#            secret:
+#              secretName: jenkins-docker-cfg
+#              items:
+#              - key: .dockerconfigjson
+#                path: config.json
       stages:
         - name: Initialization
           steps:
@@ -111,6 +109,34 @@ pipelines:
                   name: test-prettier
                 - sh: echo test:tslint
                   name: test-tslint
+            - name: Test
+              steps:
+                - sh: echo test:unit-jenkins
+                  name: test-unit
+                - sh: echo coverage
+                  name: coverage
+                - sh: echo "check-coverage"
+                  name: check-coverage
+        - name: Image Build/Push PR
+          steps:
+          - name: build-pr-tag
+            args:
+            - --cache=true
+            - --cache-dir=/workspace
+            - --context=/workspace/source
+            - --dockerfile=/workspace/source/Dockerfile
+            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:PR-${PULL_NUMBER}
+            - --cache-repo=dockeronce.azurecr.io/todo/cache
+            - --skip-tls-verify-registry=dockeronce.azurecr.io
+            command: /kaniko/executor
+            image: gcr.io/kaniko-project/executor:v1.0.0
+  release:
+    pipeline:
+      stages:
+        - name: Sonar and Image Build/Push release
+          parallel:
+            - name: Lint
+              steps:
                 - name: sonar
                   command: sonar-scanner
                   dir: /workspace/source/
@@ -123,51 +149,44 @@ pipelines:
                   - -Dsonar.sourceEncoding=UTF-8
                   - -Dsonar.projectVersion=1.0
                   - -Dsonar.host.url=http://sonarqube-sonarqube.sq:9000
-            - name: Test
+            - name: Image Build/Push latest Tag
               steps:
-                - sh: echo test:unit-jenkins
-                  name: test-unit
-                - sh: echo coverage
-                  name: coverage
-                - sh: echo "check-coverage"
-                  name: check-coverage
-        - name: Image Build/Push & Sonar
-          steps:
-          - name: eval-tag
-            sh: echo evaluate-tag
-            image: ubuntu
-            command: /bin/bash
-            args:
-            - -c
-            - |
-              /bin/bash <<'EOF'
-              # Script to evaluate image tag
+              - name: eval-tag
+                image: ubuntu
+                command: /bin/bash
+                args:
+                - -c
+                - |
+                  /bin/bash <<'EOF'
+                  # Script to evaluate image tag
 
-              branchName=$PULL_BASE_REF
-              echo "eval tag script for $branchName branch..."
-              teamBranchReg="team\/.*"
-              storyBranchReg=".*\/story\/.*"
-              if [[ $branchName =~ $teamBranchReg ]]; then
-                tag=$(echo $branchName | sed 's/team\//''/g' )
-              elif [[ $branchName =~ $storyBranchReg ]]; then
-                tag=$(echo $branchName | sed 's/\/.*/''/g' )
-              elif [[ $branchName == "master" ]]; then
-                tag="prod"
-              elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
-                tag=$branchName
-              else
-                tag="${branchName//\//'-'}"
-              fi
-              echo $tag > TAG
-              EOF
-          - name: build-pr-tag
-            args:
-            - --cache=true
-            - --cache-dir=/workspace
-            - --context=/workspace/source
-            - --dockerfile=/workspace/source/Dockerfile
-            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
-            - --cache-repo=dockeronce.azurecr.io/todo/cache
-            - --skip-tls-verify-registry=dockeronce.azurecr.io
-            command: /kaniko/executor
-            image: gcr.io/kaniko-project/executor:v1.0.0
+                  branchName=$PULL_BASE_REF
+                  echo "eval tag script for $branchName branch..."
+                  teamBranchReg="team\/.*"
+                  storyBranchReg=".*\/story\/.*"
+                  if [[ $branchName =~ $teamBranchReg ]]; then
+                    tag=$(echo $branchName | sed 's/team\//''/g' )
+                  elif [[ $branchName =~ $storyBranchReg ]]; then
+                    tag=$(echo $branchName | sed 's/\/.*/''/g' )
+                  elif [[ $branchName == "master" ]]; then
+                    tag="prod"
+                  elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
+                    tag=$branchName
+                  else
+                    tag="${branchName//\//'-'}"
+                  fi
+                  echo $tag > TAG
+                  EOF
+              - name: build-latest-tag
+                args:
+                - --cache=true
+                - --cache-dir=/workspace
+                - --context=/workspace/source
+                - --dockerfile=/workspace/source/Dockerfile
+                image: gcr.io/kaniko-project/executor:v1.0.0
+                - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
+                - --cache-repo=dockeronce.azurecr.io/todo/cache
+                - --skip-tls-verify-registry=dockeronce.azurecr.io
+                command: /kaniko/executor
+
+
