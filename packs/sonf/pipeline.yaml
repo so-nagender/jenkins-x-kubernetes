@@ -35,28 +35,27 @@ options:
           path: config.json
 pipelines:
   pullRequest:
-    pipeline:
-      setup:
+    setup:
+      steps:
+        - sh: echo "I'am initialize"
+          name: intialize
+    build:
+      steps:
+      - sh: echo "I'am build second"
+        name: container-build
+    preBuild:
+      steps:
+      - sh: echo "pre build"
+        name: pre-build-2
+    stages:
+      - name: post build stage custom ...this
+        agent:
+          image: docker.io/nagenderrawat/oh:sonf-v12
         steps:
-          - sh: echo "I'am initialize"
-            name: intialize
-      build:
-        steps:
-        - sh: echo "I'am build second"
-          name: container-build
-      preBuild:
-        steps:
-        - sh: echo "pre build"
-          name: pre-build-2
-      stages:
-        - name: post build stage custom ...this
-          agent:
-            image: docker.io/nagenderrawat/oh:sonf-v12
-          steps:
-          - sh: echo "from stage"
-            name: from-stage
-          - sh: echo "I'am post build second"
-            name: post-build-2
+        - sh: echo "from stage"
+          name: from-stage
+        - sh: echo "I'am post build second"
+          name: post-build-2
 
 
 
