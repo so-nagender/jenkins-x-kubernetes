@@ -3,11 +3,11 @@ pipelines:
     preBuild:
       steps:
       - sh: echo "pre build"
-        name: post-build
+        name: pre-build-1
     postBuild:
       steps:
       - sh: echo "I'am post build first"
-        name: post-build
+        name: post-build-1
     build:
       steps:
       - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true

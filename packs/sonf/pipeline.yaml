@@ -9,10 +9,14 @@ pipelines:
       steps:
       - sh: echo "I'am build second"
         name: container-build
+    preBuild:
+      steps:
+      - sh: echo "pre build"
+        name: pre-build-2
     postBuild:
       steps:
       - sh: echo "I'am post build second"
-        name: post-build
+        name: post-build-2
 
 
 #extends:
