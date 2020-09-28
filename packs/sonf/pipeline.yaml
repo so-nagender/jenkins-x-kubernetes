@@ -1,3 +1,5 @@
+extends:
+  file: ../pipeline.yaml
 pipelines:
   pullRequest:
     pipeline:
