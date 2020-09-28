@@ -1,10 +1,43 @@
+agent:
+  label: jenkins-nodejs
+  container: nodejs
 pipelines:
   pullRequest:
-      stages:
-        - name: Inherit
-          steps:
-            - name: eval-tag
-              sh: echo evaluate-tag
+    build:
+      steps:
+      - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
+        name: npmrc
+      - sh: npm install
+        name: npm-install
+      - sh: CI=true DISPLAY=:99 npm test
+        name: npm-test
+#  release:
+#    setVersion:
+#      steps:
+#      - sh: echo \$(jx-release-version) > VERSION
+#        name: next-version
+#        comment: so we can retrieve the version in later steps
+#      # TODO modify package.json?
+#      - sh: jx step tag --version \$(cat VERSION)
+#        name: tag-version
+#    build:
+#      steps:
+#      - sh: jx step credential -s npm-token -k file -f /builder/home/.npmrc --optional=true
+#        name: npmrc
+#      - sh: npm install
+#        name: npm-install
+#      - sh: CI=true DISPLAY=:99 npm test
+#        name: npm-test
+
+
+
+#pipelines:
+#  pullRequest:
+#      stages:
+#        - name: Inherit
+#          steps:
+#            - name: eval-tag
+#              sh: echo evaluate-tag
 #              image: ubuntu
 #              command: /bin/bash
 #              args:
