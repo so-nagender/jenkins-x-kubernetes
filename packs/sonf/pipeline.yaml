@@ -38,24 +38,24 @@ pipelineConfig:
         stages:
           - name: Initialization
             steps:
-            - sh: node -v
-              name: node-version
-            - sh: npm run clean
-              name: npm-clean
-            - sh: npm install
-              name: npm-install
+              - sh: node -v
+                name: node-version
+              - sh: npm run clean
+                name: npm-clean
+              - sh: npm install
+                name: npm-install
           - name: Checks
             parallel:
               - name: Lint Checks
                 steps:
-                - sh: echo test:prettier
-                  name: test-prettier
-                - sh: echo test:tslint
-                  name: test-tslint
+                  - sh: echo test:prettier
+                    name: test-prettier
+                  - sh: echo test:tslint
+                    name: test-tslint
               - name: Test
                 steps:
-                - sh: echo test:unit-jenkins
-                  name: test-unit
-                - sh: echo coverage
-                  name: coverage
-                - sh: sh "npx nyc check-coverage --lines 40 --functions 40 --branches 40 --statements 40"
+                  - sh: echo test:unit-jenkins
+                    name: test-unit
+                  - sh: echo coverage
+                    name: coverage
+                  - sh: sh "npx nyc check-coverage --lines 40 --functions 40 --branches 40 --statements 40"
