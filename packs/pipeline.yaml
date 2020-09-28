@@ -1,0 +1,101 @@
+pipelines:
+  pullRequest:
+    preBuild :
+      steps:
+      - name: eval-tag
+        image: ubuntu
+        command: /bin/bash
+        args:
+        - -c
+        - |
+          /bin/bash <<'EOF'
+          # Script to evaluate image tag
+
+          branchName=$PULL_BASE_REF
+          echo "eval tag script for $branchName branch..."
+          teamBranchReg="team\/.*"
+          storyBranchReg=".*\/story\/.*"
+          if [[ $branchName =~ $teamBranchReg ]]; then
+            tag=$(echo $branchName | sed 's/team\//''/g' )
+          elif [[ $branchName =~ $storyBranchReg ]]; then
+            tag=$(echo $branchName | sed 's/\/.*/''/g' )
+          elif [[ $branchName == "master" ]]; then
+            tag="prod"
+          elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
+            tag=$branchName
+          else
+            tag="${branchName//\//'-'}"
+          fi
+          echo $tag > TAG
+          EOF
+    build:
+      stages:
+        - name: Image Build/Push PR Tag
+          steps:
+          - args:
+            - --cache=true
+            - --cache-dir=/workspace
+            - --context=/workspace/source
+            - --dockerfile=/workspace/source/Dockerfile
+            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
+            - --cache-repo=dockeronce.azurecr.io/todo/cache
+            - --skip-tls-verify-registry=dockeronce.azurecr.io
+            command: /kaniko/executor
+            image: gcr.io/kaniko-project/executor:v1.0.0
+            name: build-pr-tag
+        - name: Sonarscan
+          steps:
+          - command: sonar-scanner
+            name: sonar
+            dir: /workspace/source/
+            image: sonarsource/sonar-scanner-cli
+            args:
+            - -Dsonar.projectName=$APP_NAME
+            - -Dsonar.projectKey=$APP_NAME
+            - -Dsonar.sources=.
+            - -Dsonar.exclusions=**/node_modules/**
+            - -Dsonar.sourceEncoding=UTF-8
+            - -Dsonar.projectVersion=1.0
+            - -Dsonar.host.url=http://sonarqube-sonarqube.sq:9000
+  release:
+    preBuild:
+      steps:
+      - name: eval-tag
+        image: ubuntu
+        command: /bin/bash
+        args:
+        - -c
+        - |
+          /bin/bash <<'EOF'
+          # Script to evaluate image tag
+
+          branchName=$PULL_BASE_REF
+          echo "eval tag script for $branchName branch..."
+          teamBranchReg="team\/.*"
+          storyBranchReg=".*\/story\/.*"
+          if [[ $branchName =~ $teamBranchReg ]]; then
+            tag=$(echo $branchName | sed 's/team\//''/g' )
+          elif [[ $branchName =~ $storyBranchReg ]]; then
+            tag=$(echo $branchName | sed 's/\/.*/''/g' )
+          elif [[ $branchName == "master" ]]; then
+            tag="prod"
+          elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
+            tag=$branchName
+          else
+            tag="${branchName//\//'-'}"
+          fi
+          echo $tag > TAG
+          EOF
+    build:
+      steps:
+      - args:
+        - --cache=true
+        - --cache-dir=/workspace
+        - --context=/workspace/source
+        - --dockerfile=/workspace/source/Dockerfile
+        - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
+        - --cache-repo=dockeronce.azurecr.io/todo/cache
+        - --skip-tls-verify-registry=dockeronce.azurecr.io
+        command: /kaniko/executor
+        image: gcr.io/kaniko-project/executor:v1.0.0
+        name: build-release-tag
