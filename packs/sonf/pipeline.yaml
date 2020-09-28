@@ -183,10 +183,11 @@ pipelines:
                 - --cache-dir=/workspace
                 - --context=/workspace/source
                 - --dockerfile=/workspace/source/Dockerfile
-                image: gcr.io/kaniko-project/executor:v1.0.0
                 - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
                 - --cache-repo=dockeronce.azurecr.io/todo/cache
                 - --skip-tls-verify-registry=dockeronce.azurecr.io
                 command: /kaniko/executor
+                image: gcr.io/kaniko-project/executor:v1.0.0
+
 
 
