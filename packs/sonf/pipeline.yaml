@@ -1,103 +1,64 @@
-pipelines:
-  post: {}
-  pullRequest:
-    pipeline:
-      stages:
-        - agent:
-            image: docker.io/nagenderrawat/oh:sonf-v12
-          name: pr-release
-          options:
-            containerOptions:
-              volumeMounts:
-                - mountPath: /home/jenkins
-                  name: workspace-volume
-                - mountPath: /var/run/docker.sock
-                  name: docker-daemon
-                - mountPath: /home/jenkins/.docker
-                  name: volume-0
-            volumes:
-              - emptyDir: {}
-                name: workspace-volume
-              - hostPath:
-                  path: /var/run/docker.sock
-                name: docker-daemon
-              - name: volume-0
-                secret:
-                  secretName: jenkins-docker-cfg
-                  items:
-                  - key: .dockerconfigjson
-                    path: config.json
-          environment:
-            - name: DOCKER_CONFIG
-              value: /home/jenkins/.docker/
-            - name: DOCKER_REGISTRY_ORG
-              value: "kubernetes"
-            - name: DOCKER_REGISTRY
-              valueFrom:
-                configMapKeyRef:
-                  key: docker.registry
-                  name: jenkins-x-docker-registry
-            - name: GIT_AUTHOR_EMAIL
-              value: nagender.rawat@scheduleonce.com
-            - name: GIT_AUTHOR_NAME
-              value: jenkins-x-bot
-            - name: GIT_COMMITTER_EMAIL
-              value: nagender.rawat@scheduleonce.com
-            - name: GIT_COMMITTER_NAME
-              value: jenkins-x-bot
-          steps:
-          - command: sonar-scanner
-            name: sonar
-            dir: /workspace/source/
-            image: sonarsource/sonar-scanner-cli
-            args:
-            - -Dsonar.projectName=$APP_NAME
-            - -Dsonar.projectKey=$APP_NAME
-            - -Dsonar.sources=.
-            - -Dsonar.exclusions=**/node_modules/**
-            - -Dsonar.sourceEncoding=UTF-8
-            - -Dsonar.projectVersion=1.0
-            - -Dsonar.host.url=http://sonarqube-sonarqube.sq:9000
-#          - sh: npm install
-#            name: npm-install
-#          - sh: CI=true DISPLAY=:99 npm test
-#            name: npm-test
-#          - name: eval-tag
-#            image: ubuntu
-#            command: /bin/bash
-#            args:
-#            - -c
-#            - |
-#              /bin/bash <<'EOF'
-#              # Script to evaluate image tag
-#
-#              branchName=$PULL_BASE_REF
-#              echo "eval tag script for $branchName branch..."
-#              teamBranchReg="team\/.*"
-#              storyBranchReg=".*\/story\/.*"
-#              if [[ $branchName =~ $teamBranchReg ]]; then
-#                tag=$(echo $branchName | sed 's/team\//''/g' )
-#              elif [[ $branchName =~ $storyBranchReg ]]; then
-#                tag=$(echo $branchName | sed 's/\/.*/''/g' )
-#              elif [[ $branchName == "master" ]]; then
-#                tag="prod"
-#              elif [[ $branchName == "qa" || $branchName == "staging-app2" ]]; then
-#                tag=$branchName
-#              else
-#                tag="${branchName//\//'-'}"
-#              fi
-#              echo $tag > TAG
-#              EOF
-#          - args:
-#            - --cache=true
-#            - --cache-dir=/workspace
-#            - --context=/workspace/source
-#            - --dockerfile=/workspace/source/Dockerfile
-#            - --destination=dockeronce.azurecr.io/${DOCKER_REGISTRY_ORG}/${APP_NAME}:$(cat TAG)-latest
-#            - --cache-repo=dockeronce.azurecr.io/todo/cache
-#            - --skip-tls-verify-registry=dockeronce.azurecr.io
-#            command: /kaniko/executor
-#            image: gcr.io/kaniko-project/executor:v1.0.0
-#            name: build
-
-
+pipelineConfig:
+  extends:
+    file: ../pipeline.yaml
+  agent:
+    image: docker.io/nagenderrawat/oh:sonf-v12
+  options:
+    containerOptions:
+      volumeMounts:
+        - mountPath: /home/jenkins
+          name: workspace-volume
+        - mountPath: /var/run/docker.sock
+          name: docker-daemon
+        - mountPath: /home/jenkins/.docker
+          name: volume-0
+    volumes:
+      - emptyDir: {}
+        name: workspace-volume
+      - hostPath:
+          path: /var/run/docker.sock
+        name: docker-daemon
+      - name: volume-0
+        secret:
+          secretName: jenkins-docker-cfg
+          items:
+          - key: .dockerconfigjson
+            path: config.json
+  environment:
+    - name: DOCKER_CONFIG
+      value: /home/jenkins/.docker/
+    - name: DOCKER_REGISTRY_ORG
+      value: "kubernetes"
+    - name: DOCKER_REGISTRY
+      valueFrom:
+        configMapKeyRef:
+          key: docker.registry
+          name: jenkins-x-docker-registry
+  pipelines:
+    pullRequest:
+      pipeline:
+        stages:
+          - name: Initialization
+            steps:
+            - sh: node -v
+              name: node-version
+            - sh: npm run clean
+              name: npm-clean
+            - sh: npm install
+              name: npm-install
+          - name: Checks
+            parallel:
+              - name: Lint Checks
+                steps:
+                - sh: npm run test:prettier
+                  name: test-prettier
+                - sh: npm run test:tslint
+                  name: test-tslint
+              - name: Test
+                steps:
+                - sh: npm run test:unit-jenkins
+                  name: test-unit
+                - sh: npm run coverage
+                  name: coverage
+                - sh: sh "npx nyc check-coverage --lines 40 --functions 40 --branches 40 --statements 40"
+                  name: check-coverage
