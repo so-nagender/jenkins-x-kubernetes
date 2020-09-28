@@ -1,125 +1,121 @@
-extends:
-  file: ../pipeline.yaml
-agent:
-  image: docker.io/nagenderrawat/oh:sonf-v12
-env:
-  - name: DOCKER_CONFIG
-    value: /home/jenkins/.docker/
-  - name: DOCKER_REGISTRY_ORG
-    value: "kubernetes"
-  - name: DOCKER_REGISTRY
-    valueFrom:
-      configMapKeyRef:
-        key: docker.registry
-        name: jenkins-x-docker-registry
-options:
-  containerOptions:
-    volumeMounts:
-      - mountPath: /home/jenkins
-        name: workspace-volume
-      - mountPath: /var/run/docker.sock
-        name: docker-daemon
-      - mountPath: /home/jenkins/.docker
-        name: volume-0
-  volumes:
-    - emptyDir: {}
-      name: workspace-volume
-    - hostPath:
-        path: /var/run/docker.sock
-      name: docker-daemon
-    - name: volume-0
-      secret:
-        secretName: jenkins-docker-cfg
-        items:
-        - key: .dockerconfigjson
-          path: config.json
-pipelines:
-  pullRequest:
-    pipeline:
-      setup:
-        steps:
-          - sh: echo "I'am initialize"
-            name: intialize
-      build:
-        steps:
-        - sh: echo "I'am build second"
-          name: container-build
-      preBuild:
-        steps:
-        - sh: echo "pre build"
-          name: pre-build-2
-      stages:
-        - name: post build stage custom ...this
-          agent:
-            image: docker.io/nagenderrawat/oh:sonf-v12
-          steps:
-          - sh: echo "from stage 2"
-            name: from-stage-2
-          - sh: echo "I'am post build second 2 "
-            name: post-build-2
-
-
-
 #extends:
 #  file: ../pipeline.yaml
+#agent:
+#  image: docker.io/nagenderrawat/oh:sonf-v12
+#env:
+#  - name: DOCKER_CONFIG
+#    value: /home/jenkins/.docker/
+#  - name: DOCKER_REGISTRY_ORG
+#    value: "kubernetes"
+#  - name: DOCKER_REGISTRY
+#    valueFrom:
+#      configMapKeyRef:
+#        key: docker.registry
+#        name: jenkins-x-docker-registry
+#options:
+#  containerOptions:
+#    volumeMounts:
+#      - mountPath: /home/jenkins
+#        name: workspace-volume
+#      - mountPath: /var/run/docker.sock
+#        name: docker-daemon
+#      - mountPath: /home/jenkins/.docker
+#        name: volume-0
+#  volumes:
+#    - emptyDir: {}
+#      name: workspace-volume
+#    - hostPath:
+#        path: /var/run/docker.sock
+#      name: docker-daemon
+#    - name: volume-0
+#      secret:
+#        secretName: jenkins-docker-cfg
+#        items:
+#        - key: .dockerconfigjson
+#          path: config.json
 #pipelines:
 #  pullRequest:
 #    pipeline:
-#      agent:
-#        image: docker.io/nagenderrawat/oh:sonf-v12
-#      environment:
-#        - name: DOCKER_CONFIG
-#          value: /home/jenkins/.docker/
-#        - name: DOCKER_REGISTRY_ORG
-#          value: "kubernetes"
-#        - name: DOCKER_REGISTRY
-#          valueFrom:
-#            configMapKeyRef:
-#              key: docker.registry
-#              name: jenkins-x-docker-registry
-#      options:
-#        containerOptions:
-#          volumeMounts:
-#            - mountPath: /home/jenkins
-#              name: workspace-volume
-#            - mountPath: /var/run/docker.sock
-#              name: docker-daemon
-#            - mountPath: /home/jenkins/.docker
-#              name: volume-0
-#        volumes:
-#          - emptyDir: {}
-#            name: workspace-volume
-#          - hostPath:
-#              path: /var/run/docker.sock
-#            name: docker-daemon
-#          - name: volume-0
-#            secret:
-#              secretName: jenkins-docker-cfg
-#              items:
-#              - key: .dockerconfigjson
-#                path: config.json
+#      setup:
+#        steps:
+#          - sh: echo "I'am initialize"
+#            name: intialize
+#      build:
+#        steps:
+#        - sh: echo "I'am build second"
+#          name: container-build
+#      preBuild:
+#        steps:
+#        - sh: echo "pre build"
+#          name: pre-build-2
 #      stages:
-#        - name: Initialization
+#        - name: post build stage custom ...this
+#          agent:
+#            image: docker.io/nagenderrawat/oh:sonf-v12
 #          steps:
-#            - sh: node -v
-#              name: node-version
-#            - sh: echo clean
-#              name: npm-clean
-#            - sh: npm install
-#              name: npm-install
-#        - name: Checks
-#          parallel:
-#            - name: Lint
-#              steps:
-#                - sh: echo test:prettier
-#                  name: test-prettier
-#                - sh: echo test:tslint
-#                  name: test-tslint
-#            - name: Test
-#              steps:
-#                - sh: echo test:unit-jenkins
-#                  name: test-unit
-#                - sh: echo coverage
-#                  name: coverage
-#                - sh: echo "check-coverage"
-#                  name: check-coverage
+#          - sh: echo "from stage 2"
+#            name: from-stage-2
+#          - sh: echo "I'am post build second 2 "
+#            name: post-build-2
+
+pipelines:
+  pullRequest:
+    pipeline:
+      agent:
+        image: docker.io/nagenderrawat/oh:sonf-v12
+      environment:
+        - name: DOCKER_CONFIG
+          value: /home/jenkins/.docker/
+        - name: DOCKER_REGISTRY_ORG
+          value: "kubernetes"
+        - name: DOCKER_REGISTRY
+          valueFrom:
+            configMapKeyRef:
+              key: docker.registry
+              name: jenkins-x-docker-registry
+      options:
+        containerOptions:
+          volumeMounts:
+            - mountPath: /home/jenkins
+              name: workspace-volume
+            - mountPath: /var/run/docker.sock
+              name: docker-daemon
+            - mountPath: /home/jenkins/.docker
+              name: volume-0
+        volumes:
+          - emptyDir: {}
+            name: workspace-volume
+          - hostPath:
+              path: /var/run/docker.sock
+            name: docker-daemon
+          - name: volume-0
+            secret:
+              secretName: jenkins-docker-cfg
+              items:
+              - key: .dockerconfigjson
+                path: config.json
+      stages:
+        - name: Initialization
+          steps:
+            - sh: node -v
+              name: node-version
+            - sh: echo clean
+              name: npm-clean
+            - sh: npm install
+              name: npm-install
+        - name: Checks
+          parallel:
+            - name: Lint
+              steps:
+                - sh: echo test:prettier
+                  name: test-prettier
+                - sh: echo test:tslint
+                  name: test-tslint
+            - name: Test
+              steps:
+                - sh: echo test:unit-jenkins
+                  name: test-unit
+                - sh: echo coverage
+                  name: coverage
+                - sh: echo "check-coverage"
+                  name: check-coverage
