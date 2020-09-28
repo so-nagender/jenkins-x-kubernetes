@@ -41,7 +41,7 @@ pipelines:
           steps:
             - sh: node -v
               name: node-version
-            - sh: npm run clean
+            - sh: echo clean
               name: npm-clean
             - sh: npm install
               name: npm-install
