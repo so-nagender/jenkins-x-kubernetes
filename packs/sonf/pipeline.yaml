@@ -62,4 +62,7 @@ pipelineConfig:
                   name: coverage
                 - sh: sh "npx nyc check-coverage --lines 40 --functions 40 --branches 40 --statements 40"
                   name: check-coverage
+<<<<<<< HEAD
                   
+=======
+>>>>>>> da584c85a1f9ffcba76f84951cc29361c2ba9688
