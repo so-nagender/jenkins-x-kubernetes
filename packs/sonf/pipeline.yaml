@@ -47,9 +47,9 @@ pipelines:
       steps:
       - sh: echo "pre build"
         name: pre-build-2
-    postBuild:
-      stages:
-        - name: hello stage this
+    stages:
+      - name: post build stage custom ...this
+        postBuild:
           steps:
           - sh: echo "from stage"
             name: from-stage
