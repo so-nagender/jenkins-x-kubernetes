@@ -1,13 +1,23 @@
 pipelines:
   pullRequest:
-    preBuild:
-      steps:
-      - sh: echo "pre build"
-        name: pre-build-1
-    setVersion:
-      steps:
-      - sh: echo "set version"
-        name: set-version
+    pipeline:
+      stages:
+        - name: post build
+          agent:
+            image: docker.io/nagenderrawat/oh:sonf-v12
+          steps:
+          - sh: echo "from stage-1"
+            name: from-stage-1
+          - sh: echo "I'am post build second 1"
+            name: post-build-1
+#    preBuild:
+#      steps:
+#      - sh: echo "pre build"
+#        name: pre-build-1
+#    setVersion:
+#      steps:
+#      - sh: echo "set version"
+#        name: set-version
 #  pullRequest:
 #      stages:
 #        - name: Inherit
