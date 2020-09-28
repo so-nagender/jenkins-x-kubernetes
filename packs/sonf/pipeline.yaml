@@ -5,6 +5,10 @@ agent:
   container: nodejs
 pipelines:
   pullRequest:
+    setup:
+      steps:
+        - sh: echo "I'am initialize"
+          name: intialize
     build:
       steps:
       - sh: echo "I'am build second"
