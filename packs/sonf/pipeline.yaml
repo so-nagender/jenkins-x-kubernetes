@@ -47,7 +47,7 @@ pipelines:
               name: npm-install
         - name: Checks
           parallel:
-            - name: Lint Checks
+            - name: Lint
               steps:
                 - sh: echo test:prettier
                   name: test-prettier
