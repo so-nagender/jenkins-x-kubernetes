@@ -1,61 +1,60 @@
-pipelineConfig:
-  agent:
-    image: docker.io/nagenderrawat/oh:sonf-v12
-  options:
-    containerOptions:
-      volumeMounts:
-        - mountPath: /home/jenkins
-          name: workspace-volume
-        - mountPath: /var/run/docker.sock
-          name: docker-daemon
-        - mountPath: /home/jenkins/.docker
-          name: volume-0
-    volumes:
-      - emptyDir: {}
+agent:
+  image: docker.io/nagenderrawat/oh:sonf-v12
+options:
+  containerOptions:
+    volumeMounts:
+      - mountPath: /home/jenkins
         name: workspace-volume
-      - hostPath:
-          path: /var/run/docker.sock
+      - mountPath: /var/run/docker.sock
         name: docker-daemon
-      - name: volume-0
-        secret:
-          secretName: jenkins-docker-cfg
-          items:
-          - key: .dockerconfigjson
-            path: config.json
-  environment:
-    - name: DOCKER_CONFIG
-      value: /home/jenkins/.docker/
-    - name: DOCKER_REGISTRY_ORG
-      value: "kubernetes"
-    - name: DOCKER_REGISTRY
-      valueFrom:
-        configMapKeyRef:
-          key: docker.registry
-          name: jenkins-x-docker-registry
-  pipelines:
-    pullRequest:
-      pipeline:
-        stages:
-          - name: Initialization
-            steps:
-              - sh: node -v
-                name: node-version
-              - sh: npm run clean
-                name: npm-clean
-              - sh: npm install
-                name: npm-install
-          - name: Checks
-            parallel:
-              - name: Lint Checks
-                steps:
-                  - sh: echo test:prettier
-                    name: test-prettier
-                  - sh: echo test:tslint
-                    name: test-tslint
-              - name: Test
-                steps:
-                  - sh: echo test:unit-jenkins
-                    name: test-unit
-                  - sh: echo coverage
-                    name: coverage
-                  - sh: sh "npx nyc check-coverage --lines 40 --functions 40 --branches 40 --statements 40"
+      - mountPath: /home/jenkins/.docker
+        name: volume-0
+  volumes:
+    - emptyDir: {}
+      name: workspace-volume
+    - hostPath:
+        path: /var/run/docker.sock
+      name: docker-daemon
+    - name: volume-0
+      secret:
+        secretName: jenkins-docker-cfg
+        items:
+        - key: .dockerconfigjson
+          path: config.json
+environment:
+  - name: DOCKER_CONFIG
+    value: /home/jenkins/.docker/
+  - name: DOCKER_REGISTRY_ORG
+    value: "kubernetes"
+  - name: DOCKER_REGISTRY
+    valueFrom:
+      configMapKeyRef:
+        key: docker.registry
+        name: jenkins-x-docker-registry
+pipelines:
+  pullRequest:
+    pipeline:
+      stages:
+        - name: Initialization
+          steps:
+            - sh: node -v
+              name: node-version
+            - sh: npm run clean
+              name: npm-clean
+            - sh: npm install
+              name: npm-install
+        - name: Checks
+          parallel:
+            - name: Lint Checks
+              steps:
+                - sh: echo test:prettier
+                  name: test-prettier
+                - sh: echo test:tslint
+                  name: test-tslint
+            - name: Test
+              steps:
+                - sh: echo test:unit-jenkins
+                  name: test-unit
+                - sh: echo coverage
+                  name: coverage
+                - sh: sh "npx nyc check-coverage --lines 40 --functions 40 --branches 40 --statements 40"
