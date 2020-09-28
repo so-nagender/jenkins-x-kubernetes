@@ -51,6 +51,11 @@ pipelines:
       steps:
       - sh: echo "I'am post build second"
         name: post-build-2
+    stages:
+      - name: hello stage this
+        steps:
+          - sh: echo "from stage"
+            name: from-stage
 
 
 #extends:
