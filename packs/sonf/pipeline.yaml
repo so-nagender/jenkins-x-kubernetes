@@ -2,7 +2,7 @@ extends:
   file: ../pipeline.yaml
 agent:
   image: docker.io/nagenderrawat/oh:sonf-v12
-environment:
+env:
   - name: DOCKER_CONFIG
     value: /home/jenkins/.docker/
   - name: DOCKER_REGISTRY_ORG
