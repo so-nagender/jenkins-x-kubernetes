@@ -50,12 +50,11 @@ pipelines:
           name: pre-build-2
       stages:
         - name: post build stage custom ...this
-          postBuild:
-            steps:
-            - sh: echo "from stage"
-              name: from-stage
-            - sh: echo "I'am post build second"
-              name: post-build-2
+          steps:
+          - sh: echo "from stage"
+            name: from-stage
+          - sh: echo "I'am post build second"
+            name: post-build-2
 
 
 
