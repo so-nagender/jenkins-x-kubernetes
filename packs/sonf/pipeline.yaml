@@ -49,6 +49,8 @@ pipelines:
         - sh: echo "pre build"
           name: pre-build-2
       stages:
+        agent:
+          image: docker.io/nagenderrawat/oh:sonf-v12
         - name: post build stage custom ...this
           steps:
           - sh: echo "from stage"
