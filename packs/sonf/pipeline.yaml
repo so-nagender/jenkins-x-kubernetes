@@ -48,14 +48,14 @@ pipelines:
       - sh: echo "pre build"
         name: pre-build-2
     postBuild:
-      steps:
-      - sh: echo "I'am post build second"
-        name: post-build-2
-    stages:
-      - name: hello stage this
-        steps:
+      stages:
+        - name: hello stage this
+          steps:
           - sh: echo "from stage"
             name: from-stage
+          - sh: echo "I'am post build second"
+            name: post-build-2
+
 
 
 #extends:
