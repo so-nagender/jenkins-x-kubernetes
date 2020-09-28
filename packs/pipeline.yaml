@@ -1,9 +1,10 @@
 pipelines:
   pullRequest:
-      build:
-        steps:
-          - name: eval-tag
-            sh: echo evaluate-tag
+      stages:
+        - name: Inherit
+          steps:
+            - name: eval-tag
+              sh: echo evaluate-tag
 #              image: ubuntu
 #              command: /bin/bash
 #              args:
